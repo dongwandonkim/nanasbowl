@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+//root
 app.get('/', (req, res) => {
   res.send('sites up');
 });
@@ -46,26 +47,43 @@ app.post('/update', async (req, res) => {
       'SELECT id FROM product WHERE name = $1',
       [name]
     );
-    console.log(product_id.rows[0].id);
 
     // INSERT INTO ingredient if ingredient not exist in table
     const ingredientsToMap = ingredients;
-    let ingredients_table = [];
+
     ingredientsToMap.map(async (item) => {
       await pool.query(
         'INSERT INTO ingredient (name) VALUES ($1) ON CONFLICT (name) DO NOTHING',
         [item]
       );
+
+      //get ids from ingredient
       const ids = await pool.query(
         'SELECT id FROM ingredient WHERE name = $1',
         [item]
       );
-      // console.log(ids.rows[0].id);
-      ingredients_table.push(ids.rows[0].id);
-      // res.json('update completed');
+      //INSERT INTO JUNCTION TABLE
+      await pool.query(
+        'INSERT INTO ingredient_product (ingredient_id, product_id) VALUES ($1, $2)',
+        [ids.rows[0].id, product_id.rows[0].id]
+      );
     });
-    console.log(ingredients_table);
-    res.json(f);
+
+    res.json('updated');
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
+//READ all products
+app.get('/products', async (req, res) => {
+  try {
+    const allProducts = await pool.query(
+      'SELECT product.name AS product_name, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
+    );
+
+    res.json('datais ready');
+    console.log(ingredientTable.rows);
   } catch (error) {
     console.error(error.message);
   }
