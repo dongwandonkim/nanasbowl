@@ -92,10 +92,10 @@ app.get('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const ingredientTable = await pool.query(
-      'SELECT product.name, ingredient.name FROM ingredient_product JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id JOIN product ON ingredient_product.product_id = $1',
+      'SELECT product.name, ingredient.name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
       [id]
     );
-    res.json(ingredientTable);
+    res.json(ingredientTable.rows);
   } catch (error) {
     console.error(error.message);
   }
