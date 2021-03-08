@@ -82,8 +82,20 @@ app.get('/products', async (req, res) => {
       'SELECT product.name AS product_name, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
     );
 
-    res.json('datais ready');
-    console.log(ingredientTable.rows);
+    res.json(allProducts.rows);
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
+app.get('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ingredientTable = await pool.query(
+      'SELECT product.name, ingredient.name FROM ingredient_product JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id JOIN product ON ingredient_product.product_id = $1',
+      [id]
+    );
+    res.json(ingredientTable);
   } catch (error) {
     console.error(error.message);
   }
