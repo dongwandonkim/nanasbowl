@@ -34,18 +34,27 @@ ALTER TABLE ingredient_product ADD product_id BIGINT NOT NULL REFERENCES product
 
 CREATE TABLE ingredient_product (
   ingredient_id INT REFERENCES ingredient (id) ON DELETE CASCADE,
-  product_id INT REFERENCES product (id) ON DELETE CASCADE,
+  product_id INT FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE,
   CONSTRAINT ingredient_product_pkey PRIMARY KEY (ingredient_id, product_id)
 );
-
-
-CREATE TABLE product (
-   id                     BIGSERIAL NOT NULL PRIMARY KEY,
-   name                   VARCHAR(100) NOT NULL,
-   product_type_id        BIGINT NOT NULL REFERENCES product_type(id),
-   pet_type_id            BIGINT NOT NULL REFERENCES pet_type(id),
-   ingredient_product_id  BIGINT NOT NULL REFERENCES ingredient_product(id) ON DELETE CASCADE
+CREATE TABLE ingredient_product (
+  id BIGSERIAL NOT NULL PRIMARY KEY,
+  ingredient_id INT REFERENCES ingredient (id),
+  product_id INT,
+   CONSTRAINT product_id_fK
+   FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE
 );
+   
+
+
+
+-- CREATE TABLE product (
+--    id                     BIGSERIAL NOT NULL PRIMARY KEY,
+--    name                   VARCHAR(100) NOT NULL,
+--    product_type_id        BIGINT NOT NULL REFERENCES product_type(id),
+--    pet_type_id            BIGINT NOT NULL REFERENCES pet_type(id),
+--    ingredient_product_id  BIGINT NOT NULL REFERENCES ingredient_product(id) ON DELETE CASCADE
+-- );
 
 CREATE TABLE product (
    id                     BIGSERIAL NOT NULL PRIMARY KEY,

@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
     "ingredients" : ["chicken", "beef", "turkey", "lamb"]
 }
 */
-app.post('/update', async (req, res) => {
+app.post('/create', async (req, res) => {
   try {
     const { name, product_type, pet_type, ingredients } = req.body;
 
@@ -42,6 +42,8 @@ app.post('/update', async (req, res) => {
       'INSERT INTO product (name, product_type_id, pet_type_id) VALUES ($1, $2, $3)',
       [name, product_type_id.rows[0].id, pet_type_id.rows[0].id]
     );
+    console.log(f);
+
     //get saved product_id
     const product_id = await pool.query(
       'SELECT id FROM product WHERE name = $1',
@@ -88,6 +90,7 @@ app.get('/products', async (req, res) => {
   }
 });
 
+//get a product
 app.get('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,6 +103,22 @@ app.get('/products/:id', async (req, res) => {
     console.error(error.message);
   }
 });
+
+//DELETE a product
+app.delete('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteProduct = await pool.query(
+      'DELETE FROM product WHERE product.id = $1',
+      [id]
+    );
+    res.json(`Product id:${id} was deleted successfully`);
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+//UPDATE a product
 
 const PORT = 5000;
 app.listen(PORT, () => {
