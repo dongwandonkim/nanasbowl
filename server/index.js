@@ -93,6 +93,7 @@ app.get('/products', async (req, res) => {
 });
 
 //get a product
+//TODO: get product name from product table
 app.get('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
