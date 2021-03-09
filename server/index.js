@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
     "ingredients" : ["chicken", "beef", "turkey", "lamb"]
 }
 */
-app.post('/create', async (req, res) => {
+app.post('/products/create', async (req, res) => {
   try {
     const { name, product_type, pet_type, ingredients } = req.body;
 
@@ -30,19 +30,19 @@ app.post('/create', async (req, res) => {
       'SELECT id FROM product_type WHERE type = $1',
       [product_type]
     );
-
+    console.log(product_type);
     //get matching pet_type_id
     const pet_type_id = await pool.query(
       'SELECT id FROM pet_type WHERE type = $1',
       [pet_type]
     );
+    console.log(pet_type);
 
     //INSERT INTO product
     const f = await pool.query(
       'INSERT INTO product (name, product_type_id, pet_type_id) VALUES ($1, $2, $3)',
       [name, product_type_id.rows[0].id, pet_type_id.rows[0].id]
     );
-    console.log(f);
 
     //get saved product_id
     const product_id = await pool.query(
@@ -118,7 +118,41 @@ app.delete('/products/:id', async (req, res) => {
   }
 });
 
-//UPDATE a product
+/* UPDATE a product 
+{
+    "name" : "acana",
+    "product_type" : "dry",
+    "pet_type" : "dog",
+    "ingredients" : ["chicken", "beef", "turkey", "lamb"]
+}
+TODO: see what is better solution for updating ingredients. (make new product / update-able?)
+*/
+app.put('/products/:id/', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, product_type, pet_type, ingredients } = req.body;
+    console.log(id);
+    //get matching product_type_id
+    const product_type_id = await pool.query(
+      'SELECT id FROM product_type WHERE type = $1',
+      [product_type]
+    );
+
+    //get matching pet_type_id
+    const pet_type_id = await pool.query(
+      'SELECT id FROM pet_type WHERE type = $1',
+      [pet_type]
+    );
+
+    const updateProduct = await pool.query(
+      'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3 WHERE product.id = $4',
+      [name, product_type_id.rows[0].id, pet_type_id.rows[0].id, id]
+    );
+    res.json(updateProduct);
+  } catch (error) {
+    console.log(error.message);
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
