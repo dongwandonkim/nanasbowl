@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const pool = require('./db');
 
 const app = express();
@@ -7,6 +8,7 @@ const app = express();
 //middleware
 app.use(cors());
 app.use(express.json());
+app.use(morgan('tiny'));
 
 //root
 app.get('/', (req, res) => {
@@ -30,16 +32,15 @@ app.post('/products/create', async (req, res) => {
       'SELECT id FROM product_type WHERE type = $1',
       [product_type]
     );
-    console.log(product_type);
+
     //get matching pet_type_id
     const pet_type_id = await pool.query(
       'SELECT id FROM pet_type WHERE type = $1',
       [pet_type]
     );
-    console.log(pet_type);
 
     //INSERT INTO product
-    const f = await pool.query(
+    await pool.query(
       'INSERT INTO product (name, product_type_id, pet_type_id) VALUES ($1, $2, $3)',
       [name, product_type_id.rows[0].id, pet_type_id.rows[0].id]
     );
@@ -78,12 +79,13 @@ app.post('/products/create', async (req, res) => {
 });
 
 //READ all products
+//TODO: sort by date, alphabet
 app.get('/products', async (req, res) => {
   try {
     const allProducts = await pool.query(
-      'SELECT product.name AS product_name, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
+      'SELECT product.id AS product_id, product.name AS product_name, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
     );
-
+    console.log(allProducts.rows);
     res.json(allProducts.rows);
   } catch (error) {
     console.error(error.message);
@@ -114,7 +116,7 @@ app.delete('/products/:id', async (req, res) => {
     );
     res.json(`Product id:${id} was deleted successfully`);
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 });
 
@@ -131,7 +133,7 @@ app.put('/products/:id/', async (req, res) => {
   try {
     const { id } = req.params;
     const { name, product_type, pet_type, ingredients } = req.body;
-    console.log(id);
+
     //get matching product_type_id
     const product_type_id = await pool.query(
       'SELECT id FROM product_type WHERE type = $1',
@@ -150,7 +152,7 @@ app.put('/products/:id/', async (req, res) => {
     );
     res.json(updateProduct);
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 });
 

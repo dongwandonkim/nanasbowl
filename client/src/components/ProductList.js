@@ -1,36 +1,31 @@
-import './styles/ProductList.css';
-const ProductList = () => {
-  return (
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-      <div class="col">
-        <div class="card shadow-sm">
-          <svg
-            class="bd-placeholder-img card-img-top"
-            width="100%"
-            height="255"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Placeholder: Thumbnail"
-            preserveAspectRatio="xMidYMid slice"
-            focusable="false"
-          >
-            <title>Placeholder</title>
-            <rect width="100%" height="100%" fill="#55595c" />
-            <text x="50%" y="50%" fill="#eceeef" dy=".3em">
-              Thumbnail
-            </text>
-          </svg>
+import { useState, useEffect } from 'react';
 
-          <div class="card-body">
-            <p class="card-text">
-              This is a wider card with supporting text below as a natural
-              lead-in to additional content. This content is a little bit
-              longer.
-            </p>
-          </div>
-        </div>
+import ProductCard from './ProductCard';
+
+const ProductList = () => {
+  const [lists, setLists] = useState([]);
+
+  const getProductLists = async () => {
+    try {
+      const productLists = await fetch('http://localhost:5000/products');
+      const jsonData = await productLists.json();
+      setLists(jsonData);
+      console.log(jsonData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  useEffect(() => {
+    getProductLists();
+  }, []);
+  return (
+    <>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {lists.map((data) => {
+          return <ProductCard data={data} key={data.product_id} />;
+        })}
       </div>
-    </div>
+    </>
   );
 };
 
