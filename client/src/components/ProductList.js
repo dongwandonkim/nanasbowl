@@ -10,7 +10,6 @@ const ProductList = () => {
       const productLists = await fetch('http://localhost:5000/products');
       const jsonData = await productLists.json();
       setLists(jsonData);
-      console.log(jsonData);
     } catch (error) {
       console.error(error.message);
     }
