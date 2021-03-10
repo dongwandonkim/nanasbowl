@@ -28,6 +28,8 @@ const ProductCard = (props) => {
         <div className="card-body">
           <h3 className="card-title">{props.data.product_name}</h3>
           <p className="card-text">Food type: {props.data.product_type}</p>
+          {/* TODO: design created */}
+          <p className="card-text">created: {props.data.product_created}</p>
         </div>
       </div>
     </div>

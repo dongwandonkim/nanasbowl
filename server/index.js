@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 */
 app.post('/products/create', async (req, res) => {
   try {
-    const { name, product_type, pet_type, ingredients } = req.body;
+    const { name, product_type, pet_type, ingredients, description } = req.body;
 
     //get matching product_type_id
     const product_type_id = await pool.query(
@@ -41,8 +41,8 @@ app.post('/products/create', async (req, res) => {
 
     //INSERT INTO product
     await pool.query(
-      'INSERT INTO product (name, product_type_id, pet_type_id) VALUES ($1, $2, $3)',
-      [name, product_type_id.rows[0].id, pet_type_id.rows[0].id]
+      'INSERT INTO product (name, product_type_id, pet_type_id, description) VALUES ($1, $2, $3, $4)',
+      [name, product_type_id.rows[0].id, pet_type_id.rows[0].id, description]
     );
 
     //get saved product_id
@@ -83,7 +83,7 @@ app.post('/products/create', async (req, res) => {
 app.get('/products', async (req, res) => {
   try {
     const allProducts = await pool.query(
-      'SELECT product.id AS product_id, product.name AS product_name, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
+      'SELECT product.id AS product_id, product.name AS product_name, product.created_at AS product_created, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
     );
     console.log(allProducts.rows);
     res.json(allProducts.rows);
@@ -98,7 +98,7 @@ app.get('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const ingredientTable = await pool.query(
-      'SELECT product.name AS product_name, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
+      'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
       [id]
     );
     res.json(ingredientTable.rows);
