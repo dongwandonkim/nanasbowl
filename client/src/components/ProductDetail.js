@@ -31,7 +31,9 @@ const ProductDetail = () => {
         {product.map((data, idx) => {
           return (
             <div className="mx-1" key={idx}>
-              {data.ingredient_name}
+              {data.ingredient_names.map((ingredient) => {
+                return <div>{ingredient}</div>;
+              })}
             </div>
           );
         })}

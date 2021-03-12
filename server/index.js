@@ -1,9 +1,11 @@
 const express = require('express');
+require('dotenv').config();
 const cors = require('cors');
 const morgan = require('morgan');
 const pool = require('./db');
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
 //middleware
 app.use(cors());
@@ -98,7 +100,9 @@ app.get('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const ingredientTable = await pool.query(
-      'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
+      // 'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
+      // [id]
+      'SELECT p.name AS product_name, p.description AS product_description, p.created_at AS product_created, ARRAY_AGG(i.name) AS ingredient_names FROM product p JOIN ingredient_product ip ON ip.product_id = p.id JOIN ingredient i ON i.id = ip.ingredient_id WHERE p.id = $1 GROUP BY p.id',
       [id]
     );
     res.json(ingredientTable.rows);
@@ -157,7 +161,6 @@ app.put('/products/:id/', async (req, res) => {
   }
 });
 
-const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port:${PORT}`);
 });
