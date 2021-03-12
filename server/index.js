@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5001;
 //middleware
 app.use(cors());
 app.use(express.json());
-app.use(morgan('tiny'));
+app.use(morgan('dev'));
 
 //root
 app.get('/', (req, res) => {

@@ -7,20 +7,21 @@ const ProductDetail = () => {
   let { id } = useParams();
   const [product, setProduct] = useState([]);
 
-  const getProductDetail = async () => {
-    try {
-      const productDetail = await fetch(`http://localhost:5000/products/${id}`);
-      const jsonData = await productDetail.json();
-      setProduct(jsonData);
-      console.log(jsonData);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
   useEffect(() => {
+    const getProductDetail = async () => {
+      try {
+        const productDetail = await fetch(
+          `http://localhost:5000/products/${id}`
+        );
+        const jsonData = await productDetail.json();
+        setProduct(jsonData);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
     getProductDetail();
-  }, []);
+  }, [id]);
 
   return (
     <div className="container py-3">
@@ -31,8 +32,8 @@ const ProductDetail = () => {
         {product.map((data, idx) => {
           return (
             <div className="mx-1" key={idx}>
-              {data.ingredient_names.map((ingredient) => {
-                return <div>{ingredient}</div>;
+              {data.ingredient_names.map((ingredient, idx) => {
+                return <div key={idx}>{ingredient}</div>;
               })}
             </div>
           );
