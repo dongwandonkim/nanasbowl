@@ -6,6 +6,19 @@ const ProductCreate = () => {
   const [productDesc, setProductDesc] = useState('');
   const [ingredients, setIngredients] = useState([]);
 
+  const parseIngredients = (text) => {
+    const parsedIngredientsError = '';
+    if (!text.trim().length) {
+      setIngredients([]);
+      parsedIngredientsError = '';
+      return;
+    }
+
+    const list = text.replace(/\n|\r|\*/g, '').split(/\,\s*(?![^\(]*\))/);
+    console.log(list);
+    setIngredients(list);
+  };
+
   return (
     <div className="container py-3">
       <form>
@@ -87,11 +100,11 @@ const ProductCreate = () => {
             rows="4"
             value={ingredients}
             onChange={(e) => {
-              setIngredients(e.target.value);
+              parseIngredients(e.target.value);
             }}
           ></textarea>
         </div>
-
+        {ingredients}
         <button type="submit" className="btn btn-primary btn-block mb-4">
           Send
         </button>
