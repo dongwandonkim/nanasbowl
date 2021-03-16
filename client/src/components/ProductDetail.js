@@ -31,11 +31,16 @@ const ProductDetail = () => {
       <div className="ingredients-wrapper">
         {product.map((data, idx) => {
           return (
-            <div className="mx-1" key={idx}>
+            <>
               {data.ingredient_names.map((ingredient, idx) => {
-                return <div key={idx}>{ingredient}</div>;
+                return (
+                  <div className="ingredient mx-1" key={idx}>
+                    {ingredient}
+                    {idx !== data.ingredient_names.length - 1 ? ',' : '.'}
+                  </div>
+                );
               })}
-            </div>
+            </>
           );
         })}
       </div>
