@@ -1,32 +1,31 @@
 import { useState } from 'react';
 const ProductCreate = () => {
   const [productName, setProductName] = useState('');
-  const [productType, setProductType] = useState('');
-  const [petType, setPetType] = useState('');
+  const [productType, setProductType] = useState('dry');
+  const [petType, setPetType] = useState('dog');
   const [productDesc, setProductDesc] = useState('');
   const [ingredients, setIngredients] = useState([]);
+  const [parsingError, setParsingError] = useState('');
 
   const parseIngredients = (text) => {
     let parsedIngredients = [];
-    let parsedIngredientsError = '';
+
     if (!text.trim().length) {
       parsedIngredients = [];
-      parsedIngredientsError = '';
-      return;
+      setParsingError('');
+      // return;
     }
 
     const list = text.replace(/\n|\r|\*/g, '').split(/\,\s*(?![^\(]*\))/);
 
-    //console.log(list);
     parsedIngredients = [];
-    parsedIngredientsError = '';
+    setParsingError('');
     for (const ingredient of list) {
-      // console.log(ingredient);
       const textPattern = /^([\w\s\-]+)/;
       const errorPattern = /additives/i;
-      // console.log(textPattern);
+
       if (!textPattern.test(ingredient) || errorPattern.test(ingredient)) {
-        parsedIngredientsError = `parsing error: ${ingredient}`;
+        setParsingError(`parsing error: ${ingredient}`);
         break;
       } else {
         const polished = ingredient.split(textPattern)[1].toLowerCase().trim();
@@ -36,12 +35,31 @@ const ProductCreate = () => {
       }
     }
     setIngredients(parsedIngredients);
-    console.log(parsedIngredients);
   };
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    try {
+      const body = {
+        name: productName,
+        product_type: productType,
+        pet_type: petType,
+        ingredients,
+        description: productDesc,
+      };
 
+      const res = await fetch('http://localhost:5000/products/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      console.log(res);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   return (
     <div className="container py-3">
-      <form>
+      <form onSubmit={(e) => onSubmitForm(e)}>
         <div className="form-outline mb-4">
           <label className="form-label" htmlFor="product-name">
             Product Name
@@ -65,6 +83,7 @@ const ProductCreate = () => {
             <select
               className="form-select form-control mb-4"
               id="pet-type"
+              // defaultValue={'dog'}
               value={petType}
               onChange={(e) => {
                 setPetType(e.target.value);
@@ -118,12 +137,13 @@ const ProductCreate = () => {
             className="form-control"
             id="ingredients"
             rows="4"
-            value={ingredients}
+            // value={ingredients}
             onChange={(e) => {
               parseIngredients(e.target.value);
+              // setIngredients(e.target.value);
             }}
           ></textarea>
-          {ingredients}
+          {parsingError}
         </div>
 
         <button type="submit" className="btn btn-primary btn-block mb-4">

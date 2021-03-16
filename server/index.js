@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 app.post('/products/create', async (req, res) => {
   try {
     const { name, product_type, pet_type, ingredients, description } = req.body;
-
+    console.log(req.body);
     //get matching product_type_id
     const product_type_id = await pool.query(
       'SELECT id FROM product_type WHERE type = $1',
