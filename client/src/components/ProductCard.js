@@ -2,6 +2,11 @@ import { useHistory } from 'react-router-dom';
 import './styles/ProductCard.css';
 const ProductCard = (props) => {
   let history = useHistory();
+
+  const makeDateShort = (date) => {
+    return new Date(date).toDateString();
+  };
+
   return (
     <div className="col my-3">
       <div
@@ -29,7 +34,9 @@ const ProductCard = (props) => {
           <h3 className="card-title">{props.data.product_name}</h3>
           <p className="card-text">Food type: {props.data.product_type}</p>
           {/* TODO: design created */}
-          <p className="card-text">created: {props.data.product_created}</p>
+          <p className="card-text">
+            Last updated: {makeDateShort(props.data.product_created)}
+          </p>
         </div>
       </div>
     </div>

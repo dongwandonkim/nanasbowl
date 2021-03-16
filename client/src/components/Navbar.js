@@ -1,40 +1,51 @@
 import './styles/Navbar.css';
+import { useHistory } from 'react-router-dom';
 
 const NavBar = () => {
+  const history = useHistory();
   return (
     <>
-      <nav className="navbar navbar-light bg-light">
-        <div className="container">
-          <a className="navbar-brand" href="/">
-            Nana's Bowl
-          </a>
-          <form className="form-inline">
-            <div className="btn-group mx-3">
-              <button className="btn btn-outline-success" type="button">
-                My Dog
-              </button>
-              <button className="btn btn-outline-success" type="button">
-                My Cat
-              </button>
-            </div>
-            <h3>want</h3>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <a className="navbar-brand" href="/">
+          Navbar
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                onClick={() => history.push('/products/create')}
+              >
+                Create
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Link
+              </a>
+            </li>
+          </ul>
+          <form className="form-inline my-2 my-lg-0">
             <input
-              className="form-control mx-3"
+              className="form-control mr-sm-2"
               type="search"
-              placeholder="Ingredients here..."
+              placeholder="Search"
               aria-label="Search"
             />
-
-            <div className="btn-group mx-3">
-              <button className="btn btn-outline-warning" type="button">
-                Included
-              </button>
-              <button className="btn btn-outline-warning" type="button">
-                Excluded
-              </button>
-            </div>
             <button
-              className="btn btn-outline-primary my-2 my-sm-0"
+              className="btn btn-outline-success my-2 my-sm-0"
               type="submit"
             >
               Search

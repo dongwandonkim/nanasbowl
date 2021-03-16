@@ -44,6 +44,8 @@ const ProductDetail = () => {
           );
         })}
       </div>
+      <button className="btn btn-info mx-1">Edit</button>
+      <button className="btn btn-danger mx-1">Delete</button>
     </div>
   );
 };
