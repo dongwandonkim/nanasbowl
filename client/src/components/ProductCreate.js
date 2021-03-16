@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 const ProductCreate = () => {
   const [productName, setProductName] = useState('');
   const [productType, setProductType] = useState('');
@@ -7,16 +7,36 @@ const ProductCreate = () => {
   const [ingredients, setIngredients] = useState([]);
 
   const parseIngredients = (text) => {
-    const parsedIngredientsError = '';
+    let parsedIngredients = [];
+    let parsedIngredientsError = '';
     if (!text.trim().length) {
-      setIngredients([]);
+      parsedIngredients = [];
       parsedIngredientsError = '';
       return;
     }
 
     const list = text.replace(/\n|\r|\*/g, '').split(/\,\s*(?![^\(]*\))/);
-    console.log(list);
-    setIngredients(list);
+
+    //console.log(list);
+    parsedIngredients = [];
+    parsedIngredientsError = '';
+    for (const ingredient of list) {
+      // console.log(ingredient);
+      const textPattern = /^([\w\s\-]+)/;
+      const errorPattern = /additives/i;
+      // console.log(textPattern);
+      if (!textPattern.test(ingredient) || errorPattern.test(ingredient)) {
+        parsedIngredientsError = `parsing error: ${ingredient}`;
+        break;
+      } else {
+        const polished = ingredient.split(textPattern)[1].toLowerCase().trim();
+        if (polished.length) {
+          parsedIngredients.push(polished);
+        }
+      }
+    }
+    setIngredients(parsedIngredients);
+    console.log(parsedIngredients);
   };
 
   return (
@@ -103,8 +123,9 @@ const ProductCreate = () => {
               parseIngredients(e.target.value);
             }}
           ></textarea>
+          {ingredients}
         </div>
-        {ingredients}
+
         <button type="submit" className="btn btn-primary btn-block mb-4">
           Send
         </button>
