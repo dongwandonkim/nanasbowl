@@ -129,7 +129,7 @@ app.put('/products/:id/edit', async (req, res) => {
     console.log(req.body);
 
     const updateProduct = await pool.query(
-      'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3 description = $4 WHERE product.id = $5',
+      'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4 WHERE product.id = $5',
       [name, product_type, pet_type, description, id]
     );
     res.json(updateProduct);
