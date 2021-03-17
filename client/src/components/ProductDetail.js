@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useContext } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import { ProductsContext } from '../context/ProductsContext';
 
 import './styles/ProductDetail.css';
 
 const baseURL = 'http://localhost:5000/products/';
 
 const ProductDetail = () => {
+  const history = useHistory();
+
   let { id } = useParams();
-  const [product, setProduct] = useState([]);
+  const products = useContext(ProductsContext);
 
   const deleteProduct = async () => {
     try {
@@ -25,7 +28,7 @@ const ProductDetail = () => {
       try {
         const productDetail = await fetch(baseURL + id);
         const jsonData = await productDetail.json();
-        setProduct(jsonData);
+        products.setProductInfo(jsonData);
       } catch (error) {
         console.error(error.message);
       }
@@ -35,11 +38,15 @@ const ProductDetail = () => {
 
   return (
     <div className="container py-3">
-      <h1 className="product-title">{product[0] && product[0].product_name}</h1>
-      <p>{product[0] && product[0].product_description}</p>
+      <h1 className="product-title">
+        {products.productInfo[0] && products.productInfo[0].product_name}
+      </h1>
+      <p>
+        {products.productInfo[0] && products.productInfo[0].product_description}
+      </p>
       <h4>Ingredients</h4>
       <div className="ingredients-wrapper">
-        {product.map((data, idx) => {
+        {products.productInfo.map((data, idx) => {
           return (
             <>
               {data.ingredient_names.map((ingredient, idx) => {
@@ -54,7 +61,12 @@ const ProductDetail = () => {
           );
         })}
       </div>
-      <button className="btn btn-info mx-1">Edit</button>
+      <button
+        className="btn btn-info mx-1"
+        onClick={() => history.push(`/products/${id}/edit`)}
+      >
+        Edit
+      </button>
       <button
         className="btn btn-danger mx-1"
         onClick={() => {

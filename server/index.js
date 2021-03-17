@@ -28,23 +28,11 @@ app.get('/', (req, res) => {
 app.post('/products/create', async (req, res) => {
   try {
     const { name, product_type, pet_type, ingredients, description } = req.body;
-    console.log(req.body);
-    //get matching product_type_id
-    const product_type_id = await pool.query(
-      'SELECT id FROM product_type WHERE type = $1',
-      [product_type]
-    );
-
-    //get matching pet_type_id
-    const pet_type_id = await pool.query(
-      'SELECT id FROM pet_type WHERE type = $1',
-      [pet_type]
-    );
 
     //INSERT INTO product
     await pool.query(
       'INSERT INTO product (name, product_type_id, pet_type_id, description) VALUES ($1, $2, $3, $4)',
-      [name, product_type_id.rows[0].id, pet_type_id.rows[0].id, description]
+      [name, product_type, pet_type, description]
     );
 
     //get saved product_id
@@ -102,7 +90,7 @@ app.get('/products/:id', async (req, res) => {
     const ingredientTable = await pool.query(
       // 'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
       // [id]
-      'SELECT p.name AS product_name, p.description AS product_description, p.created_at AS product_created, ARRAY_AGG(i.name) AS ingredient_names FROM product p JOIN ingredient_product ip ON ip.product_id = p.id JOIN ingredient i ON i.id = ip.ingredient_id WHERE p.id = $1 GROUP BY p.id',
+      'SELECT p.name AS product_name, p.product_type_id AS product_type_id, p.pet_type_id AS pet_type_id, p.description AS product_description, p.created_at AS product_created, ARRAY_AGG(i.name) AS ingredient_names FROM product p JOIN ingredient_product ip ON ip.product_id = p.id JOIN ingredient i ON i.id = ip.ingredient_id WHERE p.id = $1 GROUP BY p.id',
       [id]
     );
     res.json(ingredientTable.rows);
@@ -134,26 +122,15 @@ app.delete('/products/:id', async (req, res) => {
 }
 TODO: see what is better solution for updating ingredients. (make new product / update-able?)
 */
-app.put('/products/:id/', async (req, res) => {
+app.put('/products/:id/edit', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, product_type, pet_type, ingredients } = req.body;
-
-    //get matching product_type_id
-    const product_type_id = await pool.query(
-      'SELECT id FROM product_type WHERE type = $1',
-      [product_type]
-    );
-
-    //get matching pet_type_id
-    const pet_type_id = await pool.query(
-      'SELECT id FROM pet_type WHERE type = $1',
-      [pet_type]
-    );
+    const { name, product_type, pet_type, description } = req.body;
+    console.log(req.body);
 
     const updateProduct = await pool.query(
-      'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3 WHERE product.id = $4',
-      [name, product_type_id.rows[0].id, pet_type_id.rows[0].id, id]
+      'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3 description = $4 WHERE product.id = $5',
+      [name, product_type, pet_type, description, id]
     );
     res.json(updateProduct);
   } catch (error) {

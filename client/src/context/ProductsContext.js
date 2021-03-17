@@ -3,11 +3,10 @@ import { useState, createContext } from 'react';
 export const ProductsContext = createContext();
 
 export const ProductsContextProvider = (props) => {
-  const [products, setProducts] = useState([]);
+  const [productInfo, setProductInfo] = useState([]);
 
   return (
-    //SEE IF I NEED contextAPI
-    <ProductsContext.Provider value={{ products, setProducts }}>
+    <ProductsContext.Provider value={{ productInfo, setProductInfo }}>
       {props.children}
     </ProductsContext.Provider>
   );

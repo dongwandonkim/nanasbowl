@@ -1,41 +1,36 @@
-import { useState } from 'react';
-const ProductCreate = () => {
+import { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router';
+import { ProductsContext } from '../context/ProductsContext';
+
+const ProductEdit = () => {
+  const products = useContext(ProductsContext);
   const [productName, setProductName] = useState('');
-  const [productType, setProductType] = useState(1);
-  const [petType, setPetType] = useState(1);
+  const [productType, setProductType] = useState();
+  const [petType, setPetType] = useState();
   const [productDesc, setProductDesc] = useState('');
   const [ingredients, setIngredients] = useState([]);
-  const [parsingError, setParsingError] = useState('');
 
-  const parseIngredients = (text) => {
-    let parsedIngredients = [];
+  let { id } = useParams();
+  const baseURL = 'http://localhost:5000/products/';
 
-    if (!text.trim().length) {
-      parsedIngredients = [];
-      setParsingError('');
-      // return;
-    }
-
-    const list = text.replace(/\n|\r|\*/g, '').split(/\,\s*(?![^\(]*\))/);
-
-    parsedIngredients = [];
-    setParsingError('');
-    for (const ingredient of list) {
-      const textPattern = /^([\w\s\-]+)/;
-      const errorPattern = /additives/i;
-
-      if (!textPattern.test(ingredient) || errorPattern.test(ingredient)) {
-        setParsingError(`parsing error: ${ingredient}`);
-        break;
-      } else {
-        const polished = ingredient.split(textPattern)[1].toLowerCase().trim();
-        if (polished.length) {
-          parsedIngredients.push(polished);
-        }
+  useEffect(() => {
+    const getProductDetail = async () => {
+      try {
+        const productDetail = await fetch(baseURL + id);
+        const jsonData = await productDetail.json();
+        console.log(jsonData);
+        setProductName(jsonData[0].product_name);
+        setProductType(jsonData[0].product_type_id);
+        setPetType(jsonData[0].pet_type_id);
+        setProductDesc(jsonData[0].product_description);
+        setIngredients(jsonData[0].ingredient_names);
+      } catch (error) {
+        console.error(error.message);
       }
-    }
-    setIngredients(parsedIngredients);
-  };
+    };
+    getProductDetail();
+  }, [id]);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
@@ -43,12 +38,11 @@ const ProductCreate = () => {
         name: productName,
         product_type: productType,
         pet_type: petType,
-        ingredients,
         description: productDesc,
       };
 
-      await fetch('http://localhost:5000/products/create', {
-        method: 'POST',
+      await fetch(`http://localhost:5000/products/${id}/edit`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
@@ -57,9 +51,14 @@ const ProductCreate = () => {
       console.error(error.message);
     }
   };
+
   return (
     <div className="container py-3">
-      <form onSubmit={(e) => onSubmitForm(e)}>
+      <form
+        onSubmit={(e) => {
+          onSubmitForm(e);
+        }}
+      >
         <div className="form-outline mb-4">
           <label className="form-label" htmlFor="product-name">
             Product Name
@@ -73,7 +72,6 @@ const ProductCreate = () => {
               setProductName(e.target.value);
             }}
           />
-          {productName}
         </div>
         <div className="form-row">
           <div className="col">
@@ -83,8 +81,7 @@ const ProductCreate = () => {
             <select
               className="form-select form-control mb-4"
               id="pet-type"
-              // defaultValue={'dog'}
-              value={petType}
+              value={petType ? petType : '1'}
               onChange={(e) => {
                 setPetType(e.target.value);
               }}
@@ -100,10 +97,8 @@ const ProductCreate = () => {
             <select
               className="form-select form-control mb-4"
               id="product-type"
-              value={productType}
-              onChange={(e) => {
-                setProductType(e.target.value);
-              }}
+              value={productType ? productType : '1'}
+              onChange={(e) => setProductType(e.target.value)}
             >
               <option value="1">Dry Food</option>
               <option value="2">Canned Food</option>
@@ -122,10 +117,8 @@ const ProductCreate = () => {
             className="form-control"
             id="product-desc"
             rows="4"
-            value={productDesc}
-            onChange={(e) => {
-              setProductDesc(e.target.value);
-            }}
+            value={productDesc !== null ? productDesc : 'update description'}
+            onChange={(e) => setProductDesc(e.target.value)}
           ></textarea>
         </div>
 
@@ -136,14 +129,14 @@ const ProductCreate = () => {
           <textarea
             className="form-control"
             id="ingredients"
-            rows="4"
-            // value={ingredients}
-            onChange={(e) => {
-              parseIngredients(e.target.value);
-              // setIngredients(e.target.value);
-            }}
+            rows="6"
+            value={
+              ingredients !== null
+                ? ingredients
+                : "you can't update ingredients"
+            }
+            disabled={true}
           ></textarea>
-          {parsingError}
         </div>
 
         <button type="submit" className="btn btn-primary btn-block mb-4">
@@ -154,4 +147,4 @@ const ProductCreate = () => {
   );
 };
 
-export default ProductCreate;
+export default ProductEdit;
