@@ -87,7 +87,7 @@ app.get('/products', async (req, res) => {
     const allProducts = await pool.query(
       'SELECT product.id AS product_id, product.name AS product_name, product.created_at AS product_created, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id'
     );
-    console.log(allProducts.rows);
+
     res.json(allProducts.rows);
   } catch (error) {
     console.error(error.message);
