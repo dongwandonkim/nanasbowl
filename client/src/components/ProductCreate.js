@@ -1,5 +1,9 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+
 const ProductCreate = () => {
+  const history = useHistory();
+
   const [productName, setProductName] = useState('');
   const [productType, setProductType] = useState(1);
   const [petType, setPetType] = useState(1);
@@ -52,7 +56,7 @@ const ProductCreate = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      window.location = '/';
+      history.push('/');
     } catch (error) {
       console.error(error.message);
     }

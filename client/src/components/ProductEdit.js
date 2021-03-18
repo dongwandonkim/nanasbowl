@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { ProductsContext } from '../context/ProductsContext';
 
 const ProductEdit = () => {
@@ -11,6 +11,7 @@ const ProductEdit = () => {
   const [ingredients, setIngredients] = useState([]);
 
   let { id } = useParams();
+  const history = useHistory();
   const baseURL = 'http://localhost:5000/products/';
 
   useEffect(() => {
@@ -41,12 +42,12 @@ const ProductEdit = () => {
         description: productDesc,
       };
 
-      await fetch(`http://localhost:5000/products/${id}/edit`, {
+      await fetch(baseURL + id + '/edit', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      window.location = '/';
+      history.goBack();
     } catch (error) {
       console.error(error.message);
     }

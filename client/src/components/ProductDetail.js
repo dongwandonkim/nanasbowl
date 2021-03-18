@@ -8,7 +8,6 @@ const baseURL = 'http://localhost:5000/products/';
 
 const ProductDetail = () => {
   const history = useHistory();
-
   let { id } = useParams();
   const products = useContext(ProductsContext);
 
@@ -17,7 +16,7 @@ const ProductDetail = () => {
       await fetch(baseURL + id, {
         method: 'DELETE',
       });
-      window.location = '/';
+      history.push('/');
     } catch (error) {
       console.error(error.message);
     }
