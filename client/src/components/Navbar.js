@@ -1,8 +1,24 @@
 import './styles/Navbar.css';
 import { useHistory } from 'react-router-dom';
+import { useState } from 'react';
 
 const NavBar = () => {
   const history = useHistory();
+  const [searchInput, setSearchInput] = useState('');
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        `http://localhost:5000/search/?keyword=${searchInput}`
+      );
+      const parsedResult = await res.json();
+      console.log(parsedResult);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -37,12 +53,19 @@ const NavBar = () => {
               </a>
             </li>
           </ul>
-          <form className="form-inline my-2 my-lg-0">
+          <form
+            className="form-inline my-2 my-lg-0"
+            onSubmit={(e) => {
+              onSubmit(e);
+            }}
+          >
             <input
               className="form-control mr-sm-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
             <button
               className="btn btn-outline-success my-2 my-sm-0"

@@ -138,6 +138,27 @@ app.put('/products/:id/edit', async (req, res) => {
   }
 });
 
+//search
+app.get('/search', async (req, res) => {
+  try {
+    const { keyword } = req.query;
+
+    // const getIngredientId = await pool.query(
+    //   'SELECT id FROM ingredient WHERE name ILIKE $1',
+    //   [`%${keyword}%`]
+    // );
+    const response = await pool.query(
+      'SELECT DISTINCT product.name AS product_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id WHERE ingredient.name ILIKE $1',
+      [`%${keyword}%`]
+    );
+
+    // console.log(response.rows);
+    res.json(response.rows);
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port:${PORT}`);
 });
