@@ -148,11 +148,10 @@ app.get('/search', async (req, res) => {
     //   [`%${keyword}%`]
     // );
     const response = await pool.query(
-      'SELECT DISTINCT product.name AS product_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id WHERE ingredient.name ILIKE $1',
+      'SELECT DISTINCT product.id AS product_id, product.name AS product_name, pet_type.type AS pet_type, product_type.type AS product_type FROM product JOIN pet_type ON pet_type.id = product.pet_type_id JOIN product_type ON product_type.id = product.product_type_id JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id WHERE ingredient.name ILIKE $1',
       [`%${keyword}%`]
     );
 
-    // console.log(response.rows);
     res.json(response.rows);
   } catch (error) {
     console.error(error.message);

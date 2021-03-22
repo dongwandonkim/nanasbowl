@@ -1,27 +1,29 @@
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect, useContext } from 'react';
+import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
 
 const ProductList = () => {
-  const [lists, setLists] = useState([]);
+  const { productList, setProductList } = useContext(ProductsContext);
 
-  const getProductLists = async () => {
+  const getAllProductLists = async () => {
     try {
       const productLists = await fetch('http://localhost:5000/products');
       const jsonData = await productLists.json();
-      setLists(jsonData);
+      setProductList(jsonData);
     } catch (error) {
       console.error(error.message);
     }
   };
+
   useEffect(() => {
-    getProductLists();
+    getAllProductLists();
   }, []);
+
   return (
     <>
       <div className="container py-3">
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          {lists.map((data) => {
+          {productList.map((data) => {
             return <ProductCard data={data} key={data.product_id} />;
           })}
         </div>

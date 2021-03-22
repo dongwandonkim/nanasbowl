@@ -1,10 +1,13 @@
 import './styles/Navbar.css';
 import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { ProductsContext } from '../context/ProductsContext';
 
 const NavBar = () => {
   const history = useHistory();
   const [searchInput, setSearchInput] = useState('');
+
+  const { setProductList } = useContext(ProductsContext);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -13,10 +16,11 @@ const NavBar = () => {
         `http://localhost:5000/search/?keyword=${searchInput}`
       );
       const parsedResult = await res.json();
-      console.log(parsedResult);
+      setProductList(parsedResult);
     } catch (error) {
       console.error(error.message);
     }
+    e.target.value = '';
   };
 
   return (
