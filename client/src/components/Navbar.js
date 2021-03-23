@@ -20,7 +20,8 @@ const NavBar = () => {
     } catch (error) {
       console.error(error.message);
     }
-    e.target.value = '';
+    setSearchInput('');
+    history.push('/');
   };
 
   return (
