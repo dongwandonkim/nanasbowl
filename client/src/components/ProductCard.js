@@ -1,8 +1,9 @@
 import { useHistory } from 'react-router-dom';
 import './styles/ProductCard.css';
+
 const ProductCard = (props) => {
   let history = useHistory();
-
+  console.log(props.data.product_id);
   const makeDateShort = (date) => {
     return new Date(date).toDateString();
   };

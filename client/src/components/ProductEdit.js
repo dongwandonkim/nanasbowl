@@ -1,9 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { ProductsContext } from '../context/ProductsContext';
 
 const ProductEdit = () => {
-  const products = useContext(ProductsContext);
   const [productName, setProductName] = useState('');
   const [productType, setProductType] = useState();
   const [petType, setPetType] = useState();

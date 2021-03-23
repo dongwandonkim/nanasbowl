@@ -1,23 +1,23 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
 
 const ProductList = () => {
   const { productList, setProductList } = useContext(ProductsContext);
 
-  const getAllProductLists = async () => {
-    try {
-      const productLists = await fetch('http://localhost:5000/products');
-      const jsonData = await productLists.json();
-      setProductList(jsonData);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
   useEffect(() => {
+    const getAllProductLists = async () => {
+      try {
+        const productLists = await fetch('http://localhost:5000/products');
+        const jsonData = await productLists.json();
+        setProductList(jsonData);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
     getAllProductLists();
-  }, []);
+  }, [setProductList]);
 
   return (
     <>

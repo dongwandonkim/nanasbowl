@@ -9,7 +9,7 @@ const baseURL = 'http://localhost:5000/products/';
 const ProductDetail = () => {
   const history = useHistory();
   let { id } = useParams();
-  const { productInfo, setProductInfo } = useContext(ProductsContext);
+  const { productInfo, setProductInfo, keyword } = useContext(ProductsContext);
 
   const deleteProduct = async () => {
     try {
@@ -56,13 +56,13 @@ const ProductDetail = () => {
       </div>
 
       <button
-        className="btn btn-info mx-1"
+        className="btn btn-info mx-1 my-3"
         onClick={() => history.push(`/products/${id}/edit`)}
       >
         Edit
       </button>
       <button
-        className="btn btn-danger mx-1"
+        className="btn btn-danger mx-1 my-3"
         onClick={() => {
           deleteProduct();
         }}
