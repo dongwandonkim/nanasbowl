@@ -73,7 +73,14 @@ app.post('/products/create', async (req, res) => {
 app.get('/products', async (req, res) => {
   try {
     const allProducts = await pool.query(
-      'SELECT product.id AS product_id, product.name AS product_name, product.created_at AS product_created, product_type.type AS product_type, pet_type.type AS pet_type FROM product, product_type, pet_type WHERE product.product_type_id = product_type.id AND product.pet_type_id = pet_type.id LIMIT 12'
+      `SELECT product.id AS product_id, 
+              product.name AS product_name, 
+              product.created_at AS product_created, 
+              product_type.type AS product_type, 
+              pet_type.type AS pet_type FROM product, 
+              product_type, pet_type 
+              WHERE product.product_type_id = product_type.id 
+                    AND product.pet_type_id = pet_type.id LIMIT 12`
     );
 
     res.json(allProducts.rows);
@@ -90,7 +97,15 @@ app.get('/products/:id', async (req, res) => {
     const ingredientTable = await pool.query(
       // 'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
       // [id]
-      'SELECT p.name AS product_name, p.product_type_id AS product_type_id, p.pet_type_id AS pet_type_id, p.description AS product_description, p.created_at AS product_created, ARRAY_AGG(i.name) AS ingredient_names FROM product p JOIN ingredient_product ip ON ip.product_id = p.id JOIN ingredient i ON i.id = ip.ingredient_id WHERE p.id = $1 GROUP BY p.id',
+      `SELECT p.name AS product_name, 
+              p.product_type_id AS product_type_id, 
+              p.pet_type_id AS pet_type_id, 
+              p.description AS product_description, 
+              p.created_at AS product_created, 
+              ARRAY_AGG(i.name) AS ingredient_names FROM product p 
+              JOIN ingredient_product ip ON ip.product_id = p.id 
+              JOIN ingredient i ON i.id = ip.ingredient_id 
+                    WHERE p.id = $1 GROUP BY p.id`,
       [id]
     );
     res.json(ingredientTable.rows);
@@ -167,17 +182,29 @@ app.get('/search', async (req, res) => {
         [`%${keyword}%`]
       );
     } else {
+      // pet_type.type AS pet_type,
+      // product_type.type AS product_type
+      // JOIN pet_type ON pet_type.id = product.pet_type_id
+      // JOIN product_type ON product_type.id = product.product_type.id
       response = await pool.query(
-        `SELECT product.name AS product_name 
-                FROM product WHERE NOT EXISTS 
-                (SELECT * FROM ingredient_product 
-                  JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id 
-                  WHERE ingredient_product.product_id = product.id and ingredient.name 
-                  ILIKE $1)`,
+        `SELECT DISTINCT
+                        product.id AS product_id,
+                        product.name AS product_name,
+                        pet_type.type AS pet_type,
+                        product_type.type AS product_type
+                              FROM product 
+                              JOIN pet_type ON pet_type.id = product.pet_type_id
+                              JOIN product_type ON product_type.id = product.product_type_id
+                              WHERE NOT EXISTS 
+                                          (SELECT * FROM ingredient_product 
+                                            JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id 
+                                            
+                                            WHERE ingredient_product.product_id = product.id and ingredient.name 
+                                            ILIKE $1)`,
         [`%${keyword}%`]
       );
     }
-    console.log(response);
+
     res.json(response.rows);
   } catch (error) {
     console.error(error.message);
