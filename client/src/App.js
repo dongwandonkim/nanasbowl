@@ -12,15 +12,17 @@ import Main from './components/Main';
 function App() {
   return (
     <ProductsContextProvider>
-      <Search />
-      <Switch>
-        <Route exact path="/" component={Main} />
-        <Route exact path="/products" component={ProductList} />
-        <Route exact path="/products/create" component={ProductCreate} />
-        <Route exact path="/products/:id" component={ProductDetail} />
-        <Route exact path="/products/:id/edit" component={ProductEdit} />
-        <Route render={() => <h1>404: page not found</h1>} />
-      </Switch>
+      <div className="container">
+        <Search />
+        <Switch>
+          <Route exact path="/" component={Main} />
+          <Route exact path="/products" component={ProductList} />
+          <Route exact path="/products/create" component={ProductCreate} />
+          <Route exact path="/products/:id" component={ProductDetail} />
+          <Route exact path="/products/:id/edit" component={ProductEdit} />
+          <Route render={() => <h1>404: page not found</h1>} />
+        </Switch>
+      </div>
     </ProductsContextProvider>
   );
 }

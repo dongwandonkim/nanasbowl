@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
+import { FormCheck } from 'react-bootstrap';
 
 const Search = () => {
   const history = useHistory();
@@ -32,35 +33,40 @@ const Search = () => {
 
   return (
     <>
-      <div className="container">
-        <div className="input-group justify-content-center">
-          <Link to="/" className="form-inline mx-2">
-            Home
-          </Link>
-          <Link to="/products/create" className="form-inline mr-auto ml-2">
-            add product
-          </Link>
-          <form
-            className="form-inline my-5 my-lg-5"
-            onSubmit={(e) => {
-              onSubmit(e);
-            }}
-          >
-            <input
-              className="form-control mr-sm-2 ml-auto search-input"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <button className="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form>
-        </div>
+      <div className="input-group justify-content-center">
+        <Link to="/" className="form-inline mx-2">
+          Home
+        </Link>
+        <Link to="/products/create" className="form-inline mr-auto ml-2">
+          add product
+        </Link>
+        <form
+          className="form-inline my-5 my-lg-5"
+          onSubmit={(e) => {
+            onSubmit(e);
+          }}
+        >
+          <FormCheck
+            id="switchEnabled"
+            type="switch"
+            checked={include}
+            onChange={() => setInclude(!include)}
+            label={include ? 'Include' : 'Exclude'}
+            className="mx-2"
+          />
+          <input
+            className="form-control mr-sm-2 ml-auto search-input"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button className="btn btn-outline-success" type="submit">
+            Search
+          </button>
+        </form>
       </div>
-      {/* <ProductList /> */}
     </>
   );
 };

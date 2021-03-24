@@ -37,7 +37,7 @@ const ProductDetail = () => {
   }, [setProductInfo, id, keyword]);
 
   return (
-    <div className="container py-3">
+    <>
       <h1 className="product-title">
         {productInfo[0] && productInfo[0].product_name}
       </h1>
@@ -62,9 +62,13 @@ const ProductDetail = () => {
                     {ingredient}
                   </div>
                 ) : (
-                  <div className="ingredient">{ingredient}</div>
+                  <div className="ingredient" key={idx}>
+                    {ingredient}
+                  </div>
                 )}
-                {idx !== productInfo[0].ingredient_names.length - 1 ? ',' : '.'}
+
+                {/* put comma until idx gets same to the ingredient_names.length */}
+                {idx === productInfo[0].ingredient_names.length - 1 ? '.' : ','}
               </>
             );
           })}
@@ -83,7 +87,7 @@ const ProductDetail = () => {
       >
         Delete
       </button>
-    </div>
+    </>
   );
 };
 export default ProductDetail;
