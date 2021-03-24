@@ -33,7 +33,8 @@ const ProductDetail = () => {
       }
     };
     getProductDetail();
-  }, [setProductInfo, id]);
+    console.log(keyword);
+  }, [setProductInfo, id, keyword]);
 
   return (
     <div className="container py-3">
@@ -47,14 +48,27 @@ const ProductDetail = () => {
         {productInfo[0] &&
           productInfo[0].ingredient_names.map((ingredient, idx) => {
             return (
-              <div className="ingredient mx-1" key={idx}>
-                {ingredient}
+              <>
+                {ingredient.includes(keyword) && keyword ? (
+                  <div
+                    className="ingredient"
+                    style={{
+                      backgroundColor: 'pink',
+                      borderRadius: '3px',
+                      padding: '2px',
+                    }}
+                    key={idx}
+                  >
+                    {ingredient}
+                  </div>
+                ) : (
+                  <div className="ingredient">{ingredient}</div>
+                )}
                 {idx !== productInfo[0].ingredient_names.length - 1 ? ',' : '.'}
-              </div>
+              </>
             );
           })}
       </div>
-
       <button
         className="btn btn-info mx-1 my-3"
         onClick={() => history.push(`/products/${id}/edit`)}

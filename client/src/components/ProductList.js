@@ -3,7 +3,12 @@ import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
 
 const ProductList = () => {
-  const { productList, setProductList } = useContext(ProductsContext);
+  const {
+    productList,
+    setProductList,
+    showFullList,
+    setShowFullList,
+  } = useContext(ProductsContext);
 
   const getAllProductLists = async () => {
     try {
@@ -16,12 +21,14 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    const test = document.querySelector('.search-input').value;
-
-    if (test.length <= 0) {
-      getAllProductLists();
-    }
-  }, []);
+    // const test = document.querySelector('.search-input').value;
+    // if (test.length <= 0) {
+    //   getAllProductLists();
+    // }
+    // if (showFullList === true) {
+    //   getAllProductLists();
+    // }
+  }, [showFullList]);
 
   return (
     <>

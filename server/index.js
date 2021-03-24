@@ -79,7 +79,7 @@ app.get('/products', async (req, res) => {
               product_type.type AS product_type, 
               pet_type.type AS pet_type FROM product, 
               product_type, pet_type 
-              WHERE product.product_type_id = product_type.id 
+                    WHERE product.product_type_id = product_type.id 
                     AND product.pet_type_id = pet_type.id LIMIT 12`
     );
 

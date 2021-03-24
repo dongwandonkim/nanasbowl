@@ -1,19 +1,18 @@
 import { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
-import ProductList from './ProductList';
 
 const Search = () => {
   const history = useHistory();
   const [searchInput, setSearchInput] = useState('');
   const [include, setInclude] = useState(true);
 
-  const { setProductList, setKeyword } = useContext(ProductsContext);
+  const { setProductList, keyword, setKeyword } = useContext(ProductsContext);
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    history.push('/');
+    setKeyword(searchInput);
+    history.push('/products');
     getSearchedProduct();
   };
 
@@ -35,13 +34,10 @@ const Search = () => {
     <>
       <div className="container">
         <div className="input-group justify-content-center">
-          <Link className="form-inline mx-2" onClick={() => history.push('/')}>
+          <Link to="/" className="form-inline mx-2">
             Home
           </Link>
-          <Link
-            className="form-inline mr-auto ml-2"
-            onClick={() => history.push('/products/create')}
-          >
+          <Link to="/products/create" className="form-inline mr-auto ml-2">
             add product
           </Link>
           <form
