@@ -5,19 +5,23 @@ import ProductCard from './ProductCard';
 const ProductList = () => {
   const { productList, setProductList } = useContext(ProductsContext);
 
-  useEffect(() => {
-    const getAllProductLists = async () => {
-      try {
-        const productLists = await fetch('http://localhost:5000/products');
-        const jsonData = await productLists.json();
-        setProductList(jsonData);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
+  const getAllProductLists = async () => {
+    try {
+      const productLists = await fetch('http://localhost:5000/products');
+      const jsonData = await productLists.json();
+      setProductList(jsonData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
-    getAllProductLists();
-  }, [setProductList]);
+  useEffect(() => {
+    const test = document.querySelector('.search-input').value;
+
+    if (test.length <= 0) {
+      getAllProductLists();
+    }
+  }, []);
 
   return (
     <>

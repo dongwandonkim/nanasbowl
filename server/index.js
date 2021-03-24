@@ -49,7 +49,7 @@ app.post('/products/create', async (req, res) => {
         'INSERT INTO ingredient (name) VALUES ($1) ON CONFLICT (name) DO NOTHING',
         [item]
       );
-
+      console.log(item);
       //get ids from ingredient
       const ids = await pool.query(
         'SELECT id FROM ingredient WHERE name = $1',
@@ -141,17 +141,43 @@ app.put('/products/:id/edit', async (req, res) => {
 //search
 app.get('/search', async (req, res) => {
   try {
-    const { keyword } = req.query;
+    const { keyword, include } = req.query;
+
+    console.log(include);
+
+    console.log(req.query);
 
     // const getIngredientId = await pool.query(
     //   'SELECT id FROM ingredient WHERE name ILIKE $1',
     //   [`%${keyword}%`]
     // );
-    const response = await pool.query(
-      'SELECT DISTINCT product.id AS product_id, product.name AS product_name, pet_type.type AS pet_type, product_type.type AS product_type FROM product JOIN pet_type ON pet_type.id = product.pet_type_id JOIN product_type ON product_type.id = product.product_type_id JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id WHERE ingredient.name ILIKE $1',
-      [`%${keyword}%`]
-    );
-
+    let response;
+    if (include === 'true') {
+      response = await pool.query(
+        `SELECT DISTINCT product.id AS product_id, 
+                          product.name AS product_name, 
+                          pet_type.type AS pet_type, 
+                          product_type.type AS product_type 
+                          FROM product 
+                          JOIN pet_type ON pet_type.id = product.pet_type_id 
+                          JOIN product_type ON product_type.id = product.product_type_id 
+                          JOIN ingredient_product ON ingredient_product.product_id = product.id 
+                          JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id 
+                          WHERE ingredient.name ILIKE $1`,
+        [`%${keyword}%`]
+      );
+    } else {
+      response = await pool.query(
+        `SELECT product.name AS product_name 
+                FROM product WHERE NOT EXISTS 
+                (SELECT * FROM ingredient_product 
+                  JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id 
+                  WHERE ingredient_product.product_id = product.id and ingredient.name 
+                  ILIKE $1)`,
+        [`%${keyword}%`]
+      );
+    }
+    console.log(response);
     res.json(response.rows);
   } catch (error) {
     console.error(error.message);
