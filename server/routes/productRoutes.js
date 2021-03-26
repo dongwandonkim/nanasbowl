@@ -3,9 +3,9 @@ const pool = require('../db');
 const router = express.Router();
 
 //root
-router.get('/', (req, res) => {
-  res.send('sites up');
-});
+// router.get('/', (req, res) => {
+//   res.send('sites up');
+// });
 
 /* create PRODUCT
 {
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
     "ingredients" : ["chicken", "beef", "turkey", "lamb"]
 }
 */
-router.post('/products/create', async (req, res) => {
+router.post('/create', async (req, res) => {
   try {
     const { name, product_type, pet_type, ingredients, description } = req.body;
 
@@ -60,7 +60,7 @@ router.post('/products/create', async (req, res) => {
 
 //READ all products
 //TODO: sort by date, alphabet
-router.get('/products', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const allProducts = await pool.query(
       `SELECT product.id AS product_id, 
@@ -81,7 +81,7 @@ router.get('/products', async (req, res) => {
 
 //get a product
 //TODO: get product name from product table
-router.get('/products/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const ingredientTable = await pool.query(
@@ -105,7 +105,7 @@ router.get('/products/:id', async (req, res) => {
 });
 
 //DELETE a product
-router.delete('/products/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const deleteProduct = await pool.query(
@@ -127,7 +127,7 @@ router.delete('/products/:id', async (req, res) => {
 }
 TODO: see what is better solution for updating ingredients. (make new product / update-able?)
 */
-router.put('/products/:id/edit', async (req, res) => {
+router.put('/:id/edit', async (req, res) => {
   try {
     const { id } = req.params;
     const { name, product_type, pet_type, description } = req.body;
@@ -138,54 +138,6 @@ router.put('/products/:id/edit', async (req, res) => {
       [name, product_type, pet_type, description, id]
     );
     res.json(updateProduct);
-  } catch (error) {
-    console.error(error.message);
-  }
-});
-
-//search
-router.get('/search', async (req, res) => {
-  try {
-    let { keyword, include } = req.query;
-
-    if (keyword === '') include = 'true'; //if keyword is empty query all product list
-
-    let response;
-    if (include === 'true') {
-      response = await pool.query(
-        `SELECT DISTINCT product.id AS product_id, 
-                          product.name AS product_name, 
-                          pet_type.type AS pet_type, 
-                          product_type.type AS product_type 
-                          FROM product 
-                          JOIN pet_type ON pet_type.id = product.pet_type_id 
-                          JOIN product_type ON product_type.id = product.product_type_id 
-                          JOIN ingredient_product ON ingredient_product.product_id = product.id 
-                          JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id 
-                          WHERE ingredient.name ILIKE $1`,
-        [`%${keyword}%`]
-      );
-    } else {
-      response = await pool.query(
-        `SELECT DISTINCT
-                        product.id AS product_id,
-                        product.name AS product_name,
-                        pet_type.type AS pet_type,
-                        product_type.type AS product_type
-                              FROM product 
-                              JOIN pet_type ON pet_type.id = product.pet_type_id
-                              JOIN product_type ON product_type.id = product.product_type_id
-                              WHERE NOT EXISTS 
-                                          (SELECT * FROM ingredient_product 
-                                            JOIN ingredient ON ingredient_product.ingredient_id = ingredient.id 
-                                            
-                                            WHERE ingredient_product.product_id = product.id and ingredient.name 
-                                            ILIKE $1)`,
-        [`%${keyword}%`]
-      );
-    }
-
-    res.json(response.rows);
   } catch (error) {
     console.error(error.message);
   }

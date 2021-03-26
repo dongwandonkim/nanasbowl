@@ -3,7 +3,8 @@ require('dotenv').config();
 const cors = require('cors');
 const morgan = require('morgan');
 
-const routes = require('./routes/routes');
+const productRoutes = require('./routes/productRoutes');
+const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -14,7 +15,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 //routes
-app.use(routes);
+app.use('/products', productRoutes);
+app.use('/search', searchRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port:${PORT}`);
