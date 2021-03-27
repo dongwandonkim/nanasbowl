@@ -1,6 +1,13 @@
 const express = require('express');
 const productController = require('../controllers/productController');
 const router = express.Router();
+const multer = require('multer');
+
+const upload = multer({ dest: './upload' });
+
+const app = express();
+
+app.use('/image', express.static('./upload'));
 
 //root
 // router.get('/', (req, res) => {
@@ -8,7 +15,11 @@ const router = express.Router();
 // });
 
 //create PRODUCT
-router.post('/create', productController.product_create_post);
+router.post(
+  '/create',
+  upload.single('image'),
+  productController.product_create_post
+);
 
 //all products
 router.get('/', productController.product_index);

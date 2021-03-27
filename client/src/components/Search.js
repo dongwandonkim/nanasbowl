@@ -8,7 +8,7 @@ const Search = () => {
   const [searchInput, setSearchInput] = useState('');
   const [include, setInclude] = useState(true);
 
-  const { setProductList, keyword, setKeyword } = useContext(ProductsContext);
+  const { setProductList, setKeyword } = useContext(ProductsContext);
 
   const onSubmit = (e) => {
     e.preventDefault();

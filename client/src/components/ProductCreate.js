@@ -11,6 +11,15 @@ const ProductCreate = () => {
   const [ingredients, setIngredients] = useState([]);
   const [parsingError, setParsingError] = useState('');
 
+  const [productImage, setProductImage] = useState(null);
+  const [productImageName, setProductImageName] = useState('');
+
+  const imageSelectHandler = (e) => {
+    // console.log(e.target.files[0]);
+    setProductImage(e.target.files[0]);
+    setProductImageName(e.target.value);
+  };
+
   const parseIngredients = (text) => {
     let parsedIngredients = [];
 
@@ -40,8 +49,10 @@ const ProductCreate = () => {
     }
     setIngredients(parsedIngredients);
   };
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
+
     try {
       const body = {
         name: productName,
@@ -51,11 +62,24 @@ const ProductCreate = () => {
         description: productDesc,
       };
 
+      const formData = new FormData();
+      formData.append('image', productImage);
+      formData.append('image_name', productImageName);
+
+      // formData.append('product_type', productType);
+      // formData.append('pet_type', petType);
+      // formData.append('ingredients', ingredients);
+      // formData.append('description', productDesc);
+      formData.append('product_info', JSON.stringify(body));
+
       await fetch('http://localhost:5000/products/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        // headers: { 'Content-Type': 'application/json' },
+        // headers: { 'Content-Type': 'multipart/form-data' },
+        // body: JSON.stringify(body),
+        body: formData,
       });
+
       history.push('/');
     } catch (error) {
       console.error(error.message);
@@ -64,6 +88,13 @@ const ProductCreate = () => {
   return (
     <div className="container py-3">
       <form onSubmit={(e) => onSubmitForm(e)}>
+        <input
+          type="file"
+          name="file"
+          file={productImage}
+          value={productImageName}
+          onChange={(e) => imageSelectHandler(e)}
+        />
         <div className="form-outline mb-4">
           <label className="form-label" htmlFor="product-name">
             Product Name

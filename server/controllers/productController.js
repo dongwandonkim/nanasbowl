@@ -1,4 +1,5 @@
 const pool = require('../db');
+const fs = require('fs');
 
 //product_index, product_details, product_create_post, product_delete, product_update
 
@@ -44,9 +45,40 @@ const product_details = async (req, res) => {
   }
 };
 
+// json.stringify(body)
+// {
+//   name: '222222',
+//   product_type: 1,
+//   pet_type: 1,
+//   ingredients: [ '222', '222234', '423124', '6657656' ],
+//   description: '22222'
+// }
+
 const product_create_post = async (req, res) => {
   try {
-    const { name, product_type, pet_type, ingredients, description } = req.body;
+    // const { name, product_type, pet_type, ingredients, description } = req.body;
+
+    const parseData = JSON.parse(req.body.product_info);
+
+    const {
+      name,
+      product_type,
+      pet_type,
+      ingredients,
+      description,
+    } = parseData;
+
+    console.log(name, product_type, pet_type, ingredients, description);
+
+    let fileType = req.file.mimetype.split('/')[1];
+    let newFileName = req.file.filename + '.' + fileType;
+    fs.rename(
+      `./upload/${req.file.filename}`,
+      `./upload/${newFileName}`,
+      () => {
+        console.log('renamed');
+      }
+    );
 
     //INSERT INTO product
     await pool.query(
