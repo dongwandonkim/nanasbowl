@@ -26,7 +26,8 @@ const product_index = async (req, res) => {
 const product_details = async (req, res) => {
   try {
     const { id } = req.params;
-    const ingredientTable = await pool.query(
+
+    const productDetail = await pool.query(
       // 'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
       // [id]
       `SELECT p.name AS product_name, 
@@ -40,7 +41,7 @@ const product_details = async (req, res) => {
                     WHERE p.id = $1 GROUP BY p.id`,
       [id]
     );
-    res.json(ingredientTable.rows);
+    res.json(productDetail.rows);
   } catch (error) {
     console.error(error.message);
   }
@@ -72,18 +73,6 @@ const product_create_post = async (req, res) => {
 
     const resS3 = await uploadImage(file);
     console.log(resS3);
-
-    // if (req.file) {
-    //   let fileType = req.file.mimetype.split('/')[1];
-    //   let newFileName = req.file.filename + '.' + fileType;
-    //   fs.rename(
-    //     `./upload/${req.file.filename}`,
-    //     `./upload/${newFileName}`,
-    //     () => {
-    //       console.log('renamed');
-    //     }
-    //   );
-    // }
 
     //INSERT INTO product
     await pool.query(
@@ -118,7 +107,7 @@ const product_create_post = async (req, res) => {
       );
     });
 
-    res.status(201).json({ file: req.file });
+    res.status(201).json({ path: `products/${product_id}/${resS3.Key}` });
   } catch (error) {
     console.error(error.message);
   }

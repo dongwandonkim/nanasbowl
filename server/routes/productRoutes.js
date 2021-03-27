@@ -4,9 +4,9 @@ const router = express.Router();
 const multer = require('multer');
 
 const app = express();
-const upload = multer({ dest: './upload' });
+const upload = multer({ dest: 'upload/' });
 
-app.use('/image', express.static('./upload'));
+// app.use('/image', express.static('./upload'));
 
 //root
 // router.get('/', (req, res) => {

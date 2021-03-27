@@ -65,11 +65,6 @@ const ProductCreate = () => {
       const formData = new FormData();
       formData.append('image', productImage);
       formData.append('image_name', productImageName);
-
-      // formData.append('product_type', productType);
-      // formData.append('pet_type', petType);
-      // formData.append('ingredients', ingredients);
-      // formData.append('description', productDesc);
       formData.append('product_info', JSON.stringify(body));
 
       await fetch('http://localhost:5000/products/create', {
