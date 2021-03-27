@@ -1,5 +1,6 @@
 const pool = require('../db');
 const fs = require('fs');
+const { uploadImage } = require('../s3');
 
 //product_index, product_details, product_create_post, product_delete, product_update
 
@@ -67,18 +68,22 @@ const product_create_post = async (req, res) => {
       ingredients,
       description,
     } = parseData;
+    const file = req.file;
 
-    console.log(name, product_type, pet_type, ingredients, description);
+    const resS3 = await uploadImage(file);
+    console.log(resS3);
 
-    let fileType = req.file.mimetype.split('/')[1];
-    let newFileName = req.file.filename + '.' + fileType;
-    fs.rename(
-      `./upload/${req.file.filename}`,
-      `./upload/${newFileName}`,
-      () => {
-        console.log('renamed');
-      }
-    );
+    // if (req.file) {
+    //   let fileType = req.file.mimetype.split('/')[1];
+    //   let newFileName = req.file.filename + '.' + fileType;
+    //   fs.rename(
+    //     `./upload/${req.file.filename}`,
+    //     `./upload/${newFileName}`,
+    //     () => {
+    //       console.log('renamed');
+    //     }
+    //   );
+    // }
 
     //INSERT INTO product
     await pool.query(
@@ -100,7 +105,7 @@ const product_create_post = async (req, res) => {
         'INSERT INTO ingredient (name) VALUES ($1) ON CONFLICT (name) DO NOTHING',
         [item]
       );
-      console.log(item);
+
       //get ids from ingredient
       const ids = await pool.query(
         'SELECT id FROM ingredient WHERE name = $1',
@@ -113,7 +118,7 @@ const product_create_post = async (req, res) => {
       );
     });
 
-    res.json('updated');
+    res.status(201).json({ file: req.file });
   } catch (error) {
     console.error(error.message);
   }

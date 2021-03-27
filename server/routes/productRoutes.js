@@ -3,9 +3,8 @@ const productController = require('../controllers/productController');
 const router = express.Router();
 const multer = require('multer');
 
-const upload = multer({ dest: './upload' });
-
 const app = express();
+const upload = multer({ dest: './upload' });
 
 app.use('/image', express.static('./upload'));
 
