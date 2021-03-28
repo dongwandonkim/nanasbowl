@@ -1,6 +1,7 @@
 const pool = require('../db');
 const fs = require('fs');
-const { uploadImage } = require('../s3');
+const { v4: uuidv4 } = require('uuid');
+const { uploadImage, getSignedUrl } = require('../s3');
 
 //product_index, product_details, product_create_post, product_delete, product_update
 
@@ -34,14 +35,25 @@ const product_details = async (req, res) => {
               p.product_type_id AS product_type_id, 
               p.pet_type_id AS pet_type_id, 
               p.description AS product_description, 
-              p.created_at AS product_created, 
+              p.img_url AS product_img_url,
+              p.created_at AS product_created,
               ARRAY_AGG(i.name) AS ingredient_names FROM product p 
               JOIN ingredient_product ip ON ip.product_id = p.id 
               JOIN ingredient i ON i.id = ip.ingredient_id 
                     WHERE p.id = $1 GROUP BY p.id`,
       [id]
     );
-    res.json(productDetail.rows);
+
+    if (productDetail.rows[0].product_img_url) {
+      const getImageFromS3 = await getSignedUrl(
+        productDetail.rows[0].product_img_url
+      );
+
+      const newData = [...productDetail.rows, getImageFromS3];
+      res.json(newData);
+    } else {
+      res.json(productDetail.rows);
+    }
   } catch (error) {
     console.error(error.message);
   }
@@ -69,15 +81,22 @@ const product_create_post = async (req, res) => {
       ingredients,
       description,
     } = parseData;
-    const file = req.file;
 
-    const resS3 = await uploadImage(file);
-    console.log(resS3);
+    const file = req.file;
+    const fileBuffer = fs.createReadStream(file.path);
+
+    const id = uuidv4();
+    const resFromS3 = await Promise.all([
+      uploadImage(`upload/${id}`, fileBuffer, req.file.mimetype),
+    ]);
+
+    // const resS3 = await uploadImage(file);
+    console.log(resFromS3);
 
     //INSERT INTO product
     await pool.query(
-      'INSERT INTO product (name, product_type_id, pet_type_id, description) VALUES ($1, $2, $3, $4)',
-      [name, product_type, pet_type, description]
+      'INSERT INTO product (name, product_type_id, pet_type_id, description, img_url) VALUES ($1, $2, $3, $4, $5)',
+      [name, product_type, pet_type, description, `upload/${id}`]
     );
 
     //get saved product_id
@@ -107,7 +126,7 @@ const product_create_post = async (req, res) => {
       );
     });
 
-    res.status(201).json({ path: `products/${product_id}/${resS3.Key}` });
+    res.status(201).json('post success');
   } catch (error) {
     console.error(error.message);
   }

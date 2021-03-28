@@ -27,6 +27,7 @@ const ProductDetail = () => {
       try {
         const productDetail = await fetch(baseURL + id);
         const jsonData = await productDetail.json();
+        console.log(jsonData);
         setProductInfo(jsonData);
       } catch (error) {
         console.error(error.message);
@@ -38,6 +39,7 @@ const ProductDetail = () => {
 
   return (
     <>
+      <img src={productInfo[1]} alt="" />
       <h1 className="product-title">
         {productInfo[0] && productInfo[0].product_name}
       </h1>
