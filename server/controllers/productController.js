@@ -83,15 +83,10 @@ const product_create_post = async (req, res) => {
     } = parseData;
 
     const file = req.file;
-    const fileBuffer = fs.createReadStream(file.path);
+    const fileStream = fs.createReadStream(file.path);
 
     const id = uuidv4();
-    const resFromS3 = await Promise.all([
-      uploadImage(`upload/${id}`, fileBuffer, req.file.mimetype),
-    ]);
-
-    // const resS3 = await uploadImage(file);
-    console.log(resFromS3);
+    await uploadImage(`upload/${id}`, fileStream, req.file.mimetype);
 
     //INSERT INTO product
     await pool.query(
@@ -149,7 +144,6 @@ const product_update = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, product_type, pet_type, description } = req.body;
-    console.log(req.body);
 
     const updateProduct = await pool.query(
       'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4 WHERE product.id = $5',

@@ -6,14 +6,28 @@ import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import ProductCreate from './components/ProductCreate';
 import ProductEdit from './components/ProductEdit';
-import { ProductsContextProvider } from './context/ProductsContext';
 import Main from './components/Main';
+import SideMenu from './components/SideMenu';
+
+import { ProductsContextProvider } from './context/ProductsContext';
+import { CssBaseline, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles({
+  appMain: {
+    paddingLeft: '320px',
+    width: '100%',
+  },
+});
 
 function App() {
+  const styles = useStyles();
   return (
     <ProductsContextProvider>
-      <div className="container">
+      <SideMenu />
+      <div className={styles.appMain}>
         <Search />
+      </div>
+      <div className="container">
         <Switch>
           <Route exact path="/" component={Main} />
           <Route exact path="/products" component={ProductList} />
@@ -23,6 +37,7 @@ function App() {
           <Route render={() => <h1>404: page not found</h1>} />
         </Switch>
       </div>
+      <CssBaseline />
     </ProductsContextProvider>
   );
 }

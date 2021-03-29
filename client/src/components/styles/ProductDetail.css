@@ -8,3 +8,8 @@
   /* padding: 5px; */
   line-height: 1em;
 }
+.product-image {
+  position: relative;
+  max-width: 400px;
+  max-height: 400px;
+}

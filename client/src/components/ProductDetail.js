@@ -1,6 +1,9 @@
 import { useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
+import { Button, ButtonGroup } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import './styles/ProductDetail.css';
 
@@ -27,19 +30,19 @@ const ProductDetail = () => {
       try {
         const productDetail = await fetch(baseURL + id);
         const jsonData = await productDetail.json();
-        console.log(jsonData);
         setProductInfo(jsonData);
       } catch (error) {
         console.error(error.message);
       }
     };
     getProductDetail();
-    console.log(keyword);
   }, [setProductInfo, id, keyword]);
 
   return (
     <>
-      <img src={productInfo[1]} alt="" />
+      {productInfo && (
+        <img className="product-image" src={productInfo[1]} alt="" />
+      )}
       <h1 className="product-title">
         {productInfo[0] && productInfo[0].product_name}
       </h1>
@@ -75,20 +78,26 @@ const ProductDetail = () => {
             );
           })}
       </div>
-      <button
-        className="btn btn-info mx-1 my-3"
-        onClick={() => history.push(`/products/${id}/edit`)}
-      >
-        Edit
-      </button>
-      <button
-        className="btn btn-danger mx-1 my-3"
-        onClick={() => {
-          deleteProduct();
-        }}
-      >
-        Delete
-      </button>
+      <ButtonGroup>
+        <Button
+          startIcon={<SaveIcon />}
+          variant="contained"
+          color="primary"
+          onClick={() => history.push(`/products/${id}/edit`)}
+        >
+          Save
+        </Button>
+        <Button
+          startIcon={<DeleteIcon />}
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            deleteProduct();
+          }}
+        >
+          Delete
+        </Button>
+      </ButtonGroup>
     </>
   );
 };

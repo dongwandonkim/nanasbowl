@@ -1,10 +1,35 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import { FormCheck } from 'react-bootstrap';
+import {
+  AppBar,
+  makeStyles,
+  Toolbar,
+  Grid,
+  InputBase,
+  IconButton,
+} from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import SearchIcon from '@material-ui/icons/Search';
+
+const useStyles = makeStyles({
+  root: {
+    backgroundColor: '#fff',
+  },
+  searchInput: {
+    opacity: '0.6',
+    padding: '0px 8px',
+    fontSize: '0.8rem',
+  },
+});
 
 const Search = () => {
+  const styles = useStyles();
+
   const history = useHistory();
+  const formRef = useRef(null);
+
   const [searchInput, setSearchInput] = useState('');
   const [include, setInclude] = useState(true);
 
@@ -15,6 +40,7 @@ const Search = () => {
     setKeyword(searchInput);
     history.push('/products');
     getSearchedProduct();
+    formRef.current.select();
   };
 
   const getSearchedProduct = async () => {
@@ -33,6 +59,25 @@ const Search = () => {
 
   return (
     <>
+      <AppBar position="static" className={styles.root}>
+        <Toolbar>
+          <Grid container alignItems="center">
+            <Grid item>
+              <InputBase
+                className={styles.searchInput}
+                placeholder="Search by Ingredient"
+                startAdornment={<SearchIcon fontsize="small" />}
+              />
+            </Grid>
+            <Grid item sm></Grid>
+            <Grid item>
+              <IconButton badgeContent={4}>
+                <AccountCircleIcon></AccountCircleIcon>
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Toolbar>
+      </AppBar>
       <div className="input-group justify-content-center">
         <Link to="/" className="form-inline mx-2">
           Home
@@ -60,6 +105,7 @@ const Search = () => {
             placeholder="Search"
             aria-label="Search"
             value={searchInput}
+            ref={formRef}
             onChange={(e) => setSearchInput(e.target.value)}
           />
           <button className="btn btn-outline-success" type="submit">
