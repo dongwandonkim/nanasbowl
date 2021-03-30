@@ -78,10 +78,9 @@ const ProductDetail = () => {
             );
           })}
       </div>
-      <ButtonGroup>
+      <ButtonGroup variant="contained">
         <Button
           startIcon={<SaveIcon />}
-          variant="contained"
           color="primary"
           onClick={() => history.push(`/products/${id}/edit`)}
         >
@@ -89,7 +88,6 @@ const ProductDetail = () => {
         </Button>
         <Button
           startIcon={<DeleteIcon />}
-          variant="contained"
           color="secondary"
           onClick={() => {
             deleteProduct();

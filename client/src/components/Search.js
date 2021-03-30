@@ -21,11 +21,17 @@ const useStyles = makeStyles({
     opacity: '0.6',
     padding: '0px 8px',
     fontSize: '0.8rem',
+    '&:hover': {
+      backgroundColor: '#f2f2f2',
+    },
+    '& .MuiSvgIcon-root': {
+      marginRight: '8px',
+    },
   },
 });
 
 const Search = () => {
-  const styles = useStyles();
+  const classes = useStyles();
 
   const history = useHistory();
   const formRef = useRef(null);
@@ -59,20 +65,20 @@ const Search = () => {
 
   return (
     <>
-      <AppBar position="static" className={styles.root}>
+      <AppBar position="static" className={classes.root}>
         <Toolbar>
           <Grid container alignItems="center">
             <Grid item>
               <InputBase
-                className={styles.searchInput}
+                className={classes.searchInput}
                 placeholder="Search by Ingredient"
-                startAdornment={<SearchIcon fontsize="small" />}
+                startAdornment={<SearchIcon fontSize="small" />}
               />
             </Grid>
             <Grid item sm></Grid>
             <Grid item>
-              <IconButton badgeContent={4}>
-                <AccountCircleIcon></AccountCircleIcon>
+              <IconButton>
+                <AccountCircleIcon />
               </IconButton>
             </Grid>
           </Grid>
