@@ -22,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  preview: {
+    width: '200px',
+    height: '200px',
+  },
 }));
 
 const ProductCreate = () => {
@@ -37,11 +41,13 @@ const ProductCreate = () => {
 
   const [productImage, setProductImage] = useState(null);
   const [productImageName, setProductImageName] = useState('');
+  const [previewImage, setPreviewImage] = useState(null);
 
   const imageSelectHandler = (e) => {
     // console.log(e.target.files[0]);
     setProductImage(e.target.files[0]);
     setProductImageName(e.target.value);
+    setPreviewImage(URL.createObjectURL(e.target.files[0]));
     console.log(productImage);
   };
 
@@ -125,6 +131,11 @@ const ProductCreate = () => {
                 style={{ display: 'none' }}
               />
             </Button>
+            <img
+              className={classes.preview}
+              src={previewImage}
+              alt="preview"
+            ></img>
             <TextField
               variant="standard"
               label="Product Name"
