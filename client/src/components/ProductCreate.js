@@ -107,7 +107,7 @@ const ProductCreate = () => {
   };
   return (
     <Paper>
-      <form className={classes.root}>
+      <form className={classes.root} onSubmit={onSubmitForm}>
         <Grid container>
           <Grid item xs={6}>
             <Button
@@ -125,7 +125,11 @@ const ProductCreate = () => {
                 style={{ display: 'none' }}
               />
             </Button>
-            <TextField variant="standard" label="Product Name" />
+            <TextField
+              variant="standard"
+              label="Product Name"
+              onChange={(e) => setProductName(e.target.value)}
+            />
             <FormControl>
               <InputLabel id="pet_type-label">Pet Type</InputLabel>
               <Select
@@ -164,13 +168,21 @@ const ProductCreate = () => {
               variant="outlined"
               rows={12}
               label="Product Description"
+              value={productDesc}
+              onChange={(e) => {
+                setProductDesc(e.target.value);
+              }}
             />
             <TextField
               multiline
               variant="outlined"
               rows={12}
               label="Product Ingredients"
+              onChange={(e) => {
+                parseIngredients(e.target.value);
+              }}
             />
+            {parsingError}
             <FormControl>
               <Button
                 variant="contained"
@@ -185,106 +197,6 @@ const ProductCreate = () => {
           <item xs={6}></item>
         </Grid>
       </form>
-      <div className="container py-3">
-        <form onSubmit={(e) => onSubmitForm(e)}>
-          {/* <input
-            type="file"
-            name="file"
-            file={productImage}
-            value={productImageName}
-            onChange={(e) => imageSelectHandler(e)}
-          /> */}
-          <div className="form-outline mb-4">
-            <label className="form-label" htmlFor="product-name">
-              Product Name
-            </label>
-            <input
-              type="text"
-              id="product-name"
-              className="form-control"
-              value={productName}
-              onChange={(e) => {
-                setProductName(e.target.value);
-              }}
-            />
-            {productName}
-          </div>
-          <div className="form-row">
-            <div className="col">
-              <label className="form-label" htmlFor="pet-type">
-                Pet Type
-              </label>
-              <select
-                className="form-select form-control mb-4"
-                id="pet-type"
-                // defaultValue={'dog'}
-                value={petType}
-                onChange={(e) => {
-                  setPetType(e.target.value);
-                }}
-              >
-                <option value="1">Dog</option>
-                <option value="2">Cat</option>
-              </select>
-            </div>
-            <div className="col">
-              <label className="form-label" htmlFor="product-type">
-                Product Type
-              </label>
-              <select
-                className="form-select form-control mb-4"
-                id="product-type"
-                value={productType}
-                onChange={(e) => {
-                  setProductType(e.target.value);
-                }}
-              >
-                <option value="1">Dry Food</option>
-                <option value="2">Canned Food</option>
-                <option value="3">Freeze-Dried Food</option>
-                <option value="4">Raw Food</option>
-                <option value="5">Treat</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="form-outline mb-4">
-            <label className="form-label" htmlFor="product-desc">
-              Product Description
-            </label>
-            <textarea
-              className="form-control"
-              id="product-desc"
-              rows="4"
-              value={productDesc}
-              onChange={(e) => {
-                setProductDesc(e.target.value);
-              }}
-            ></textarea>
-          </div>
-
-          <div className="form-outline mb-4">
-            <label className="form-label" htmlFor="ingredients">
-              Ingredients
-            </label>
-            <textarea
-              className="form-control"
-              id="ingredients"
-              rows="4"
-              // value={ingredients}
-              onChange={(e) => {
-                parseIngredients(e.target.value);
-                // setIngredients(e.target.value);
-              }}
-            ></textarea>
-            {parsingError}
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-block mb-4">
-            Send
-          </button>
-        </form>
-      </div>
     </Paper>
   );
 };
