@@ -30,7 +30,6 @@ async function uploadImage(key, buffer, mimetype) {
   });
 }
 
-//get image
 function getSignedUrl(key) {
   return new Promise((resolve, reject) => {
     s3.getSignedUrl(

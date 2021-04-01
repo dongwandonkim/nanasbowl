@@ -1,7 +1,7 @@
-import { useState, useContext, useRef } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useState, useContext, useRef, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
-import { FormCheck } from 'react-bootstrap';
+
 import {
   AppBar,
   makeStyles,
@@ -9,26 +9,33 @@ import {
   Grid,
   InputBase,
   IconButton,
+  Link,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
+import { Switch } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: '#fff',
+    color: 'black',
   },
   searchInput: {
-    opacity: '0.6',
+    opacity: '0.8',
     padding: '0px 8px',
-    fontSize: '0.8rem',
+    backgroundColor: '#f2f2f2',
+    borderRadius: '3px',
     '&:hover': {
-      backgroundColor: '#f2f2f2',
+      backgroundColor: 'lighgrey',
     },
     '& .MuiSvgIcon-root': {
       marginRight: '8px',
     },
   },
-});
+  switch: {
+    marginRight: theme.spacing(3),
+  },
+}));
 
 const Search = () => {
   const classes = useStyles();
@@ -39,7 +46,9 @@ const Search = () => {
   const [searchInput, setSearchInput] = useState('');
   const [include, setInclude] = useState(true);
 
-  const { setProductList, setKeyword } = useContext(ProductsContext);
+  const { productList, setProductList, setKeyword } = useContext(
+    ProductsContext
+  );
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -62,64 +71,66 @@ const Search = () => {
     }
     setKeyword(searchInput);
   };
-
+  useEffect(() => {
+    console.log(productList);
+  }, [productList]);
   return (
-    <>
-      <AppBar position="static" className={classes.root}>
+    <AppBar position="static" className={classes.root}>
+      <form
+        onSubmit={(e) => {
+          onSubmit(e);
+        }}
+      >
         <Toolbar>
-          <Grid container alignItems="center">
+          <Grid container rows alignItems="center">
             <Grid item>
+              <Link
+                component="button"
+                className="form-inline mx-2"
+                onClick={() => history.push('/')}
+              >
+                Home
+              </Link>
+            </Grid>
+            <Grid item xs={2}>
+              <Link
+                component="button"
+                className="form-inline mr-auto ml-2"
+                onClick={() => history.push('/products/create')}
+              >
+                add product
+              </Link>
+            </Grid>
+            <Grid item xs={0}></Grid>
+            <Grid item className={classes.switch} xs={2}>
+              <Switch
+                checked={include}
+                onChange={() => setInclude(!include)}
+                color="primary"
+              />
+              {include ? 'Include' : 'Exclude'}
+            </Grid>
+            <Grid item xs={6} sm={6} lg={3}>
               <InputBase
                 className={classes.searchInput}
                 placeholder="Search by Ingredient"
                 startAdornment={<SearchIcon fontSize="small" />}
+                value={searchInput}
+                inputRef={formRef}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </Grid>
-            <Grid item sm></Grid>
-            <Grid item>
+
+            <Grid item xs={0}></Grid>
+            <Grid item xs={1}>
               <IconButton>
                 <AccountCircleIcon />
               </IconButton>
             </Grid>
           </Grid>
         </Toolbar>
-      </AppBar>
-      <div className="input-group justify-content-center">
-        <Link to="/" className="form-inline mx-2">
-          Home
-        </Link>
-        <Link to="/products/create" className="form-inline mr-auto ml-2">
-          add product
-        </Link>
-        <form
-          className="form-inline my-5 my-lg-5"
-          onSubmit={(e) => {
-            onSubmit(e);
-          }}
-        >
-          <FormCheck
-            id="switchEnabled"
-            type="switch"
-            checked={include}
-            onChange={() => setInclude(!include)}
-            label={include ? 'Include' : 'Exclude'}
-            className="mx-2"
-          />
-          <input
-            className="form-control mr-sm-2 ml-auto search-input"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            value={searchInput}
-            ref={formRef}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-          <button className="btn btn-outline-success" type="submit">
-            Search
-          </button>
-        </form>
-      </div>
-    </>
+      </form>
+    </AppBar>
   );
 };
 

@@ -1,4 +1,5 @@
 const pool = require('../db');
+const { getSignedUrl } = require('../s3');
 
 const search_product = async (req, res) => {
   try {
@@ -12,7 +13,8 @@ const search_product = async (req, res) => {
         `SELECT DISTINCT product.id AS product_id, 
                           product.name AS product_name, 
                           pet_type.type AS pet_type, 
-                          product_type.type AS product_type 
+                          product_type.type AS product_type, 
+                          product.img_url AS product_img_url
                           FROM product 
                           JOIN pet_type ON pet_type.id = product.pet_type_id 
                           JOIN product_type ON product_type.id = product.product_type_id 
@@ -27,7 +29,8 @@ const search_product = async (req, res) => {
                         product.id AS product_id,
                         product.name AS product_name,
                         pet_type.type AS pet_type,
-                        product_type.type AS product_type
+                        product_type.type AS product_type,
+                        product.img_url AS product_img_url
                               FROM product 
                               JOIN pet_type ON pet_type.id = product.pet_type_id
                               JOIN product_type ON product_type.id = product.product_type_id
@@ -41,7 +44,18 @@ const search_product = async (req, res) => {
       );
     }
 
-    res.json(response.rows);
+    const abc = response.rows.map((data) => {
+      if (data.product_img_url == null) return data;
+      return getSignedUrl(data.product_img_url).then((res) => {
+        data.signedUrl = res;
+        console.log(res);
+        return data;
+      });
+    });
+
+    Promise.all(abc).then((result) => {
+      res.json(result);
+    });
   } catch (error) {
     console.error(error.message);
   }

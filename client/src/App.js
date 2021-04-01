@@ -10,24 +10,20 @@ import Main from './components/Main';
 import SideMenu from './components/SideMenu';
 
 import { ProductsContextProvider } from './context/ProductsContext';
-import { CssBaseline, makeStyles } from '@material-ui/core';
+import { CssBaseline, makeStyles, Container } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   appMain: {
-    paddingLeft: '320px',
-    width: '100%',
+    paddingTop: theme.spacing(3),
   },
-});
+}));
 
 function App() {
   const styles = useStyles();
   return (
     <ProductsContextProvider>
-      <SideMenu />
-      <div className={styles.appMain}>
+      <Container maxWidth="lg" className={styles.appMain}>
         <Search />
-      </div>
-      <div className="container">
         <Switch>
           <Route exact path="/" component={Main} />
           <Route exact path="/products" component={ProductList} />
@@ -36,7 +32,7 @@ function App() {
           <Route exact path="/products/:id/edit" component={ProductEdit} />
           <Route render={() => <h1>404: page not found</h1>} />
         </Switch>
-      </div>
+      </Container>
       <CssBaseline />
     </ProductsContextProvider>
   );

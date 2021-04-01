@@ -10,13 +10,13 @@ import {
   FormHelperText,
   makeStyles,
   Button,
-  Paper,
+  Container,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  form: {
     '& .MuiFormControl-root': {
       width: '100%',
       margin: theme.spacing(1),
@@ -48,7 +48,6 @@ const ProductCreate = () => {
     setProductImage(e.target.files[0]);
     setProductImageName(e.target.value);
     setPreviewImage(URL.createObjectURL(e.target.files[0]));
-    console.log(productImage);
   };
 
   const parseIngredients = (text) => {
@@ -112,8 +111,8 @@ const ProductCreate = () => {
     }
   };
   return (
-    <Paper>
-      <form className={classes.root} onSubmit={onSubmitForm}>
+    <Container maxWidth="lg">
+      <form className={classes.form} onSubmit={onSubmitForm}>
         <Grid container>
           <Grid item xs={6}>
             <Button
@@ -131,11 +130,13 @@ const ProductCreate = () => {
                 style={{ display: 'none' }}
               />
             </Button>
-            <img
-              className={classes.preview}
-              src={previewImage}
-              alt="preview"
-            ></img>
+            {previewImage ? (
+              <img
+                className={classes.preview}
+                src={previewImage}
+                alt="preview"
+              ></img>
+            ) : null}
             <TextField
               variant="standard"
               label="Product Name"
@@ -205,10 +206,9 @@ const ProductCreate = () => {
               </Button>
             </FormControl>
           </Grid>
-          <item xs={6}></item>
         </Grid>
       </form>
-    </Paper>
+    </Container>
   );
 };
 

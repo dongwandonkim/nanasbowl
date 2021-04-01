@@ -40,7 +40,7 @@ const ProductDetail = () => {
 
   return (
     <>
-      {productInfo && (
+      {productInfo[1] && (
         <img className="product-image" src={productInfo[1]} alt="" />
       )}
       <h1 className="product-title">
@@ -84,7 +84,7 @@ const ProductDetail = () => {
           color="primary"
           onClick={() => history.push(`/products/${id}/edit`)}
         >
-          Save
+          Edit
         </Button>
         <Button
           startIcon={<DeleteIcon />}
