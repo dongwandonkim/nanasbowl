@@ -1,8 +1,18 @@
 import { useEffect, useContext } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
-import { Grid } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: theme.spacing(2),
+    // padding: theme.spacing(2),
+  },
+}));
+
 const ProductList = () => {
+  const classes = useStyles();
+
   const {
     productList,
     setProductList,
@@ -31,12 +41,10 @@ const ProductList = () => {
   }, [showFullList]);
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} sm={6} md={4}>
-        {productList.map((data) => {
-          return <ProductCard data={data} key={data.product_id} />;
-        })}
-      </Grid>
+    <Grid container spacing={3} className={classes.root}>
+      {productList.map((data) => {
+        return <ProductCard data={data} key={data.product_id} />;
+      })}
     </Grid>
   );
 };

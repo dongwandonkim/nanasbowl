@@ -72,7 +72,7 @@ const Search = () => {
     setKeyword(searchInput);
   };
   useEffect(() => {
-    console.log(productList);
+    // console.log(productList);
   }, [productList]);
   return (
     <AppBar position="static" className={classes.root}>

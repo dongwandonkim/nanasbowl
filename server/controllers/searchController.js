@@ -48,7 +48,6 @@ const search_product = async (req, res) => {
       if (data.product_img_url == null) return data;
       return getSignedUrl(data.product_img_url).then((res) => {
         data.signedUrl = res;
-        console.log(res);
         return data;
       });
     });

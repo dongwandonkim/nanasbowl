@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom';
+import TextTruncate from 'react-text-truncate';
 import {
   Card,
   CardActionArea,
@@ -8,14 +9,16 @@ import {
   Typography,
   Button,
   makeStyles,
+  Grid,
 } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    maxWidth: '100%',
+    maxHeight: '440px',
   },
   media: {
-    height: 140,
+    height: 240,
   },
 });
 
@@ -28,36 +31,44 @@ const ProductCard = (props) => {
   };
 
   return (
-    <Card
-      className={classes.root}
-      onClick={() => history.push(`/products/${props.data.product_id}`)}
-    >
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          // image="/static/images/cards/contemplative-reptile.jpg"
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {props.data.product_name}
-          </Typography>
-          <Typography>{props.data.product_type}</Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary">
-          Share
-        </Button>
-        <Button size="small" color="primary">
-          Learn More
-        </Button>
-      </CardActions>
-    </Card>
+    <Grid item xs={12} sm={6} md={4}>
+      {console.log(props.data)}
+      <Card
+        className={classes.root}
+        onClick={() => history.push(`/products/${props.data.product_id}`)}
+      >
+        <CardActionArea>
+          <CardMedia
+            className={classes.media}
+            image={props.data.signedUrl && props.data.signedUrl}
+            title="Contemplative Reptile"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              {props.data.product_name}
+            </Typography>
+            <Typography>{props.data.product_type}</Typography>
+            {/* <Typography variant="body2" color="textSecondary" component="p"> */}
+            <TextTruncate
+              line={1}
+              element="span"
+              truncateText="…"
+              text={props.data.product_desc}
+              // textTruncateChild={<a href="#">Read on</a>}
+            />
+            {/* </Typography> */}
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button size="small" color="primary">
+            Share
+          </Button>
+          <Button size="small" color="primary">
+            Learn More
+          </Button>
+        </CardActions>
+      </Card>
+    </Grid>
   );
 };
 
