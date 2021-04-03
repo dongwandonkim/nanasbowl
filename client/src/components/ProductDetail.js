@@ -1,15 +1,43 @@
 import { useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
-import { Button, ButtonGroup } from '@material-ui/core';
+import {
+  Button,
+  ButtonGroup,
+  CardMedia,
+  Divider,
+  Grid,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import './styles/ProductDetail.css';
-
 const baseURL = 'http://localhost:5000/products/';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: theme.spacing(2),
+  },
+  image: {
+    height: '500px',
+    width: '450px',
+  },
+  divider: {
+    // height: '75%',
+    width: '2px',
+    fontWeight: 'bold',
+  },
+  ingredient: {},
+  selectedIngredient: {
+    backgroundColor: 'pink',
+    borderRadius: '3px',
+    // padding: '2px',
+  },
+}));
+
 const ProductDetail = () => {
+  const classes = useStyles();
   const history = useHistory();
   let { id } = useParams();
   const { productInfo, setProductInfo, keyword } = useContext(ProductsContext);
@@ -39,64 +67,90 @@ const ProductDetail = () => {
   }, [setProductInfo, id, keyword]);
 
   return (
-    <>
-      {productInfo[1] && (
-        <img className="product-image" src={productInfo[1]} alt="" />
-      )}
-      <h1 className="product-title">
-        {productInfo[0] && productInfo[0].product_name}
-      </h1>
-      <p>{productInfo[0] && productInfo[0].product_description}</p>
-      <h4>Ingredients</h4>
-
-      <div className="ingredients-wrapper">
+    <Grid container className={classes.root}>
+      <Grid item xs={12}>
+        {productInfo[1] && (
+          <CardMedia
+            className={classes.image}
+            image={productInfo[1]}
+          ></CardMedia>
+        )}
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h2">
+          {productInfo[0] && productInfo[0].product_name}
+        </Typography>
+      </Grid>
+      <Grid item>
+        <Typography>
+          {productInfo[0] && productInfo[0].product_description}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h4">Ingredients</Typography>
+      </Grid>
+      <Grid
+        className={classes.root}
+        container
+        xs
+        spacing={1}
+        align="center"
+        direction="row"
+      >
         {productInfo[0] &&
           productInfo[0].ingredient_names.map((ingredient, idx) => {
             return (
               <>
                 {ingredient.includes(keyword) && keyword ? (
-                  <div
-                    className="ingredient"
-                    style={{
-                      backgroundColor: 'pink',
-                      borderRadius: '3px',
-                      padding: '2px',
-                    }}
-                    key={idx}
-                  >
-                    {ingredient}
-                  </div>
+                  <Grid item>
+                    <Typography
+                      className={classes.selectedIngredient}
+                      key={idx}
+                    >
+                      {ingredient}
+                    </Typography>
+                  </Grid>
                 ) : (
-                  <div className="ingredient" key={idx}>
-                    {ingredient}
-                  </div>
+                  <Grid item>
+                    <Typography key={idx}>{ingredient}</Typography>
+                  </Grid>
                 )}
-
                 {/* put comma until idx gets same to the ingredient_names.length */}
-                {idx === productInfo[0].ingredient_names.length - 1 ? '.' : ','}
+                <Typography align="center">
+                  {idx === productInfo[0].ingredient_names.length - 1 ? (
+                    ''
+                  ) : (
+                    <Divider
+                      className={classes.divider}
+                      orientation="vertical"
+                    />
+                  )}
+                </Typography>
               </>
             );
           })}
-      </div>
-      <ButtonGroup variant="contained">
-        <Button
-          startIcon={<SaveIcon />}
-          color="primary"
-          onClick={() => history.push(`/products/${id}/edit`)}
-        >
-          Edit
-        </Button>
-        <Button
-          startIcon={<DeleteIcon />}
-          color="secondary"
-          onClick={() => {
-            deleteProduct();
-          }}
-        >
-          Delete
-        </Button>
-      </ButtonGroup>
-    </>
+      </Grid>
+      <Grid item xs={12}>
+        <ButtonGroup variant="contained">
+          <Button
+            startIcon={<SaveIcon />}
+            color="primary"
+            onClick={() => history.push(`/products/${id}/edit`)}
+          >
+            Edit
+          </Button>
+          <Button
+            startIcon={<DeleteIcon />}
+            color="secondary"
+            onClick={() => {
+              deleteProduct();
+            }}
+          >
+            Delete
+          </Button>
+        </ButtonGroup>
+      </Grid>
+    </Grid>
   );
 };
 export default ProductDetail;
