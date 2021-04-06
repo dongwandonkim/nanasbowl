@@ -10,15 +10,17 @@ import {
   Button,
   makeStyles,
   Grid,
+  CircularProgress,
 } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
     maxWidth: '100%',
-    maxHeight: '400px',
+    minHeight: '100%',
   },
   media: {
-    height: 240,
+    minHeight: '250px',
+    minWidth: '100%',
   },
 });
 
@@ -32,16 +34,27 @@ const ProductCard = (props) => {
 
   return (
     <Grid item xs={12} sm={6} md={4}>
-      {console.log(props.data)}
       <Card className={classes.root}>
         <CardActionArea
           onClick={() => history.push(`/products/${props.data.product_id}`)}
         >
-          <CardMedia
-            className={classes.media}
-            image={props.data.signedUrl && props.data.signedUrl}
-            title={props.data.product_name}
-          />
+          {props.data.signedUrl ? (
+            props.data.signedUrl ? (
+              <CardMedia
+                className={classes.media}
+                image={props.data.signedUrl && props.data.signedUrl}
+                title={props.data.product_name}
+              />
+            ) : (
+              <CircularProgress />
+            )
+          ) : (
+            <CardMedia
+              className={classes.media}
+              alt="image not available"
+              image="https://via.placeholder.com/400x250?text=ImageNotAvailable"
+            />
+          )}
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               {props.data.product_name}

@@ -5,6 +5,7 @@ import {
   Button,
   ButtonGroup,
   CardMedia,
+  CircularProgress,
   Divider,
   Grid,
   makeStyles,
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     width: '450px',
   },
   divider: {
-    // height: '75%',
+    height: '100%',
     width: '2px',
     fontWeight: 'bold',
   },
@@ -81,83 +82,90 @@ const ProductDetail = () => {
   return (
     <Grid container className={classes.root}>
       <Grid item xs={12} md={6}>
-        {productInfo[1] && (
-          <CardMedia
-            className={classes.image}
-            image={productInfo[1]}
-          ></CardMedia>
-        )}
+        {productInfo[1] ? (
+          productInfo[1] ? (
+            <CardMedia
+              className={classes.image}
+              image={productInfo[1]}
+            ></CardMedia>
+          ) : (
+            <CircularProgress />
+          )
+        ) : null}
       </Grid>
-      <Grid container xs={12} md={6}>
-        <Grid item xs={12}>
-          <Typography variant="h5" className={classes.productName}>
-            {productInfo[0] && productInfo[0].product_name}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className={classes.typoSpacing}>
-          <Typography variant="body1">
-            {productInfo[0] && productInfo[0].product_description}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className={classes.typoSpacing}>
-          <Typography variant="h6" className={classes.productName}>
-            Ingredients
-          </Typography>
-        </Grid>
-        <Grid container spacing={1}>
-          {productInfo[0] &&
-            productInfo[0].ingredient_names.map((ingredient, idx) => {
-              return (
-                <>
-                  {ingredient.includes(keyword) && keyword ? (
-                    <Grid item>
-                      <Typography
-                        className={classes.selectedIngredient}
-                        key={idx}
-                        variant="body1"
-                      >
-                        {ingredient}
-                      </Typography>
-                    </Grid>
-                  ) : (
-                    <Grid item>
-                      <Typography key={idx}>{ingredient}</Typography>
-                    </Grid>
-                  )}
-                  {/* put divider until idx gets same to the ingredient_names.length */}
-                  <Typography align="center">
-                    {idx === productInfo[0].ingredient_names.length - 1 ? (
-                      ''
+      <Grid item xs={12} md={6}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.productName}>
+              {productInfo[0] && productInfo[0].product_name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} className={classes.typoSpacing}>
+            <Typography variant="body1">
+              {productInfo[0] && productInfo[0].product_description}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} className={classes.typoSpacing}>
+            <Typography variant="h6" className={classes.productName}>
+              Ingredients
+            </Typography>
+          </Grid>
+          <Grid container spacing={1}>
+            {productInfo[0] &&
+              productInfo[0].ingredient_names.map((ingredient, idx) => {
+                return (
+                  <>
+                    {ingredient.includes(keyword) && keyword ? (
+                      <Grid item key={idx}>
+                        <Typography
+                          className={classes.selectedIngredient}
+                          key={idx}
+                          variant="body1"
+                        >
+                          {ingredient}
+                        </Typography>
+                      </Grid>
                     ) : (
-                      <Divider
-                        className={classes.divider}
-                        orientation="vertical"
-                      />
+                      <Grid item key={idx}>
+                        <Typography key={idx}>{ingredient}</Typography>
+                      </Grid>
                     )}
-                  </Typography>
-                </>
-              );
-            })}
-        </Grid>
-        <Grid item xs={12} className={classes.buttonSpacing}>
-          <ButtonGroup variant="contained">
-            <Button
-              startIcon={<SaveIcon />}
-              color="primary"
-              onClick={() => history.push(`/products/${id}/edit`)}
-            >
-              Edit
-            </Button>
-            <Button
-              startIcon={<DeleteIcon />}
-              color="secondary"
-              onClick={() => {
-                deleteProduct();
-              }}
-            >
-              Delete
-            </Button>
-          </ButtonGroup>
+                    {/* put divider until idx gets same to the ingredient_names.length */}
+
+                    {idx ===
+                    productInfo[0].ingredient_names.length - 1 ? null : (
+                      <Grid item key={ingredient}>
+                        <Divider
+                          className={classes.divider}
+                          orientation="vertical"
+                          key={idx}
+                        />
+                      </Grid>
+                    )}
+                  </>
+                );
+              })}
+          </Grid>
+          <Grid item xs={12} className={classes.buttonSpacing}>
+            <ButtonGroup variant="contained">
+              <Button
+                startIcon={<SaveIcon />}
+                color="primary"
+                onClick={() => history.push(`/products/${id}/edit`)}
+              >
+                Edit
+              </Button>
+              <Button
+                startIcon={<DeleteIcon />}
+                color="secondary"
+                onClick={() => {
+                  deleteProduct();
+                }}
+              >
+                Delete
+              </Button>
+            </ButtonGroup>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

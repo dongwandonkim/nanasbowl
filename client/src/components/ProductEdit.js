@@ -148,7 +148,7 @@ const ProductEdit = () => {
                 <Select
                   labelId="pet_type-label"
                   label="Pet Type"
-                  value={petType}
+                  value={petType ? petType : ''}
                   defaultValue=""
                   onChange={(e) => {
                     setPetType(e.target.value);
@@ -164,7 +164,7 @@ const ProductEdit = () => {
                 <Select
                   labelId="product_type-label"
                   label="Product Type"
-                  value={productType}
+                  value={productType ? productType : ''}
                   defaultValue=""
                   onChange={(e) => {
                     setProductType(e.target.value);
