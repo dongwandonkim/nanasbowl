@@ -1,15 +1,12 @@
 import React from 'react';
-import { makeStyles, Drawer, MenuItem } from '@material-ui/core';
+import { makeStyles, Drawer, List, ListItem } from '@material-ui/core';
 
 const useStyles = makeStyles({
   sideMenu: {
-    // display: 'flex',
-    // flexDirection: 'column',
-    // position: 'absolute',
-    // left: '0px',
-    width: '320px',
-    // height: '100%',
-    backgroundColor: '#253053',
+    width: '280px',
+    // backgroundColor: '#253053',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -22,8 +19,10 @@ export default function SideMenu(props) {
       open={props.open}
       onClose={props.toggle}
     >
-      <MenuItem onClick={props.toggle}>Menu Item</MenuItem>
-      <MenuItem>Menu Item 2</MenuItem>
+      <List>
+        <ListItem onClick={props.toggle}>Menu Item</ListItem>
+        <ListItem>Menu Item 2</ListItem>
+      </List>
     </Drawer>
   );
 }

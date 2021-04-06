@@ -7,7 +7,6 @@ import ProductDetail from './components/ProductDetail';
 import ProductCreate from './components/ProductCreate';
 import ProductEdit from './components/ProductEdit';
 import Main from './components/Main';
-import SideMenu from './components/SideMenu';
 
 import { ProductsContextProvider } from './context/ProductsContext';
 import { CssBaseline, makeStyles, Container } from '@material-ui/core';

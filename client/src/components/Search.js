@@ -11,8 +11,7 @@ import {
   IconButton,
   Link,
   Switch,
-  Drawer,
-  MenuItem,
+  Typography,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
@@ -21,15 +20,29 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SideMenu from './SideMenu';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: '#fff',
-    color: 'black',
+  root: {},
+  grow: {
+    flexGrow: 1,
   },
+  title: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
+  mobileHidden: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'block',
+    },
+  },
+
   searchInput: {
     opacity: '0.8',
     padding: '0px 8px',
     backgroundColor: '#f2f2f2',
     borderRadius: '3px',
+    width: '100%',
     '&:hover': {
       backgroundColor: 'lighgrey',
     },
@@ -105,33 +118,23 @@ const Search = () => {
                 </IconButton>
               </Grid>
               <Grid item>
-                <Link
-                  component="button"
-                  className="form-inline mx-2"
+                <Typography
+                  className={classes.title}
                   onClick={() => history.push('/')}
                 >
-                  Home
-                </Link>
+                  Nana's Bowl
+                </Typography>
               </Grid>
-              <Grid item xs={2}>
-                <Link
-                  component="button"
-                  className="form-inline mr-auto ml-2"
-                  onClick={() => history.push('/products/create')}
-                >
-                  add product
-                </Link>
-              </Grid>
-              <Grid item xs={0}></Grid>
-              <Grid item className={classes.switch} xs={2}>
+              <Grid item className={classes.grow} />
+              <Grid item className={classes.switch} xs={3} sm={3} md={2}>
                 <Switch
                   checked={include}
                   onChange={() => setInclude(!include)}
-                  color="primary"
+                  color="default"
                 />
                 {include ? 'Include' : 'Exclude'}
               </Grid>
-              <Grid item xs={6} sm={6} lg={3}>
+              <Grid item xs={6} sm={5} md={5} lg={5} className={classes.grow}>
                 <InputBase
                   className={classes.searchInput}
                   placeholder="Search by Ingredient"
@@ -141,9 +144,8 @@ const Search = () => {
                   onChange={(e) => setSearchInput(e.target.value)}
                 />
               </Grid>
-
-              <Grid item xs={0}></Grid>
-              <Grid item xs={1}>
+              <Grid className={classes.grow}></Grid>
+              <Grid item className={classes.mobileHidden}>
                 <IconButton>
                   <AccountCircleIcon />
                 </IconButton>
@@ -152,7 +154,7 @@ const Search = () => {
           </Toolbar>
         </form>
       </AppBar>
-      <SideMenu open={toggleDrawer} toggle={handleToggle}></SideMenu>
+      <SideMenu open={toggleDrawer} toggle={handleToggle} />
     </>
   );
 };
