@@ -11,6 +11,7 @@ import {
   makeStyles,
   Button,
   Container,
+  CardMedia,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
@@ -131,11 +132,11 @@ const ProductCreate = () => {
               />
             </Button>
             {previewImage ? (
-              <img
+              <CardMedia
                 className={classes.preview}
                 src={previewImage}
                 alt="preview"
-              ></img>
+              ></CardMedia>
             ) : null}
             <TextField
               variant="standard"

@@ -1,5 +1,34 @@
 import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
+import {
+  Grid,
+  TextField,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormHelperText,
+  makeStyles,
+  Button,
+  Container,
+  CardMedia,
+} from '@material-ui/core';
+import ImageIcon from '@material-ui/icons/Image';
+import SaveIcon from '@material-ui/icons/Save';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const useStyles = makeStyles((theme) => ({
+  form: {
+    '& .MuiFormControl-root': {
+      width: '100%',
+      margin: theme.spacing(1),
+    },
+  },
+  image: {
+    width: '200px',
+    height: '200px',
+  },
+}));
 
 const ProductEdit = () => {
   const [productName, setProductName] = useState('');
@@ -7,22 +36,34 @@ const ProductEdit = () => {
   const [petType, setPetType] = useState();
   const [productDesc, setProductDesc] = useState('');
   const [ingredients, setIngredients] = useState([]);
+  const [productImage, setProductImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [originalImage, setOriginalImage] = useState(null);
+  const [productImageName, setProductImageName] = useState('');
+
+  const classes = useStyles();
 
   let { id } = useParams();
   const history = useHistory();
   const baseURL = 'http://localhost:5000/products/';
+
+  const imageSelectHandler = (e) => {
+    setProductImage(e.target.files[0]);
+    setProductImageName(e.target.value);
+    setPreviewImage(URL.createObjectURL(e.target.files[0]));
+  };
 
   useEffect(() => {
     const getProductDetail = async () => {
       try {
         const productDetail = await fetch(baseURL + id);
         const jsonData = await productDetail.json();
-        console.log(jsonData);
         setProductName(jsonData[0].product_name);
         setProductType(jsonData[0].product_type_id);
         setPetType(jsonData[0].pet_type_id);
         setProductDesc(jsonData[0].product_description);
         setIngredients(jsonData[0].ingredient_names);
+        setOriginalImage(jsonData[1]);
       } catch (error) {
         console.error(error.message);
       }
@@ -32,6 +73,7 @@ const ProductEdit = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+
     try {
       const body = {
         name: productName,
@@ -39,110 +81,137 @@ const ProductEdit = () => {
         pet_type: petType,
         description: productDesc,
       };
+      let formData = new FormData();
+      if (productImage !== null) {
+        formData.append('image', productImage);
+        formData.append('image_name', productImageName);
+      }
+      formData.append('product_info', JSON.stringify(body));
 
       await fetch(baseURL + id + '/edit', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: formData,
       });
-      history.goBack();
+
+      history.push('/');
     } catch (error) {
       console.error(error.message);
     }
   };
 
   return (
-    <div className="container py-3">
-      <form
-        onSubmit={(e) => {
-          onSubmitForm(e);
-        }}
-      >
-        <div className="form-outline mb-4">
-          <label className="form-label" htmlFor="product-name">
-            Product Name
-          </label>
-          <input
-            type="text"
-            id="product-name"
-            className="form-control"
-            value={productName}
-            onChange={(e) => {
-              setProductName(e.target.value);
-            }}
-          />
-        </div>
-        <div className="form-row">
-          <div className="col">
-            <label className="form-label" htmlFor="pet-type">
-              Pet Type
-            </label>
-            <select
-              className="form-select form-control mb-4"
-              id="pet-type"
-              value={petType ? petType : '1'}
-              onChange={(e) => {
-                setPetType(e.target.value);
-              }}
-            >
-              <option value="1">Dog</option>
-              <option value="2">Cat</option>
-            </select>
-          </div>
-          <div className="col">
-            <label className="form-label" htmlFor="product-type">
-              Product Type
-            </label>
-            <select
-              className="form-select form-control mb-4"
-              id="product-type"
-              value={productType ? productType : '1'}
-              onChange={(e) => setProductType(e.target.value)}
-            >
-              <option value="1">Dry Food</option>
-              <option value="2">Canned Food</option>
-              <option value="3">Freeze-Dried Food</option>
-              <option value="4">Raw Food</option>
-              <option value="5">Treat</option>
-            </select>
-          </div>
-        </div>
+    <>
+      <Container maxWidth="lg">
+        <form className={classes.form} onSubmit={onSubmitForm}>
+          <Grid container>
+            <Grid item xs={6}>
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<ImageIcon />}
+                color="primary"
+              >
+                Upload Image
+                <input
+                  type="file"
+                  file={productImage}
+                  value={productImageName}
+                  onChange={(e) => imageSelectHandler(e)}
+                  style={{ display: 'none' }}
+                />
+              </Button>
 
-        <div className="form-outline mb-4">
-          <label className="form-label" htmlFor="product-desc">
-            Product Description
-          </label>
-          <textarea
-            className="form-control"
-            id="product-desc"
-            rows="4"
-            value={productDesc !== null ? productDesc : 'update description'}
-            onChange={(e) => setProductDesc(e.target.value)}
-          ></textarea>
-        </div>
+              {originalImage || previewImage ? (
+                previewImage ? (
+                  <CardMedia
+                    className={classes.image}
+                    image={previewImage}
+                    alt="preview"
+                  ></CardMedia>
+                ) : (
+                  <CardMedia
+                    className={classes.image}
+                    image={originalImage}
+                  ></CardMedia>
+                )
+              ) : (
+                <CircularProgress />
+              )}
+              <TextField
+                variant="standard"
+                label="Product Name"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+              />
+              <FormControl>
+                <InputLabel id="pet_type-label">Pet Type</InputLabel>
+                <Select
+                  labelId="pet_type-label"
+                  label="Pet Type"
+                  value={petType}
+                  defaultValue=""
+                  onChange={(e) => {
+                    setPetType(e.target.value);
+                  }}
+                >
+                  <MenuItem value="1">Dog</MenuItem>
+                  <MenuItem value="2">Cat</MenuItem>
+                </Select>
+                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+              <FormControl>
+                <InputLabel id="product_type-label">Product Type</InputLabel>
+                <Select
+                  labelId="product_type-label"
+                  label="Product Type"
+                  value={productType}
+                  defaultValue=""
+                  onChange={(e) => {
+                    setProductType(e.target.value);
+                  }}
+                >
+                  <MenuItem value={`1`}>Dry</MenuItem>
+                  <MenuItem value={`2`}>Canned</MenuItem>
+                  <MenuItem value={`3`}>Freeze-Dried</MenuItem>
+                  <MenuItem value={`4`}>Raw</MenuItem>
+                  <MenuItem value={`5`}>Treat</MenuItem>
+                </Select>
+                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+              <TextField
+                multiline
+                variant="outlined"
+                rows={12}
+                label="Product Description"
+                value={productDesc}
+                onChange={(e) => {
+                  setProductDesc(e.target.value);
+                }}
+              />
+              <TextField
+                multiline
+                variant="outlined"
+                rows={12}
+                label="Product Ingredients"
+                value={ingredients}
+                disabled
+              />
 
-        <div className="form-outline mb-4">
-          <label className="form-label" htmlFor="ingredients">
-            Ingredients
-          </label>
-          <textarea
-            className="form-control"
-            id="ingredients"
-            rows="6"
-            value={
-              ingredients !== null
-                ? ingredients
-                : "you can't update ingredients"
-            }
-            disabled={true}
-          ></textarea>
-        </div>
-
-        <button type="submit" className="btn btn-primary btn-block mb-4">
-          Send
-        </button>
-      </form>
-    </div>
+              <FormControl>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  startIcon={<SaveIcon />}
+                >
+                  Create
+                </Button>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </form>
+      </Container>
+    </>
   );
 };
 

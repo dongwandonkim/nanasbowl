@@ -5,8 +5,9 @@ export const ProductsContext = createContext();
 export const ProductsContextProvider = (props) => {
   const [productInfo, setProductInfo] = useState([]);
   const [productList, setProductList] = useState([]);
-  const [showFullList, setShowFullList] = useState(true);
+
   const [keyword, setKeyword] = useState('');
+  const [include, setInclude] = useState(true);
 
   return (
     <ProductsContext.Provider
@@ -17,8 +18,8 @@ export const ProductsContextProvider = (props) => {
         setProductList,
         keyword,
         setKeyword,
-        showFullList,
-        setShowFullList,
+        include,
+        setInclude,
       }}
     >
       {props.children}

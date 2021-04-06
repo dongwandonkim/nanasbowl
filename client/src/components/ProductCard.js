@@ -15,7 +15,7 @@ import {
 const useStyles = makeStyles({
   root: {
     maxWidth: '100%',
-    maxHeight: '440px',
+    maxHeight: '400px',
   },
   media: {
     height: 240,
@@ -33,15 +33,14 @@ const ProductCard = (props) => {
   return (
     <Grid item xs={12} sm={6} md={4}>
       {console.log(props.data)}
-      <Card
-        className={classes.root}
-        onClick={() => history.push(`/products/${props.data.product_id}`)}
-      >
-        <CardActionArea>
+      <Card className={classes.root}>
+        <CardActionArea
+          onClick={() => history.push(`/products/${props.data.product_id}`)}
+        >
           <CardMedia
             className={classes.media}
             image={props.data.signedUrl && props.data.signedUrl}
-            title="Contemplative Reptile"
+            title={props.data.product_name}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
@@ -50,8 +49,8 @@ const ProductCard = (props) => {
             <Typography>{props.data.product_type}</Typography>
             {/* <Typography variant="body2" color="textSecondary" component="p"> */}
             <TextTruncate
-              line={1}
-              element="span"
+              line={2}
+              element="p"
               truncateText="…"
               text={props.data.product_desc}
               // textTruncateChild={<a href="#">Read on</a>}

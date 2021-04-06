@@ -1,51 +1,67 @@
 import { useEffect, useContext } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(2),
-    // padding: theme.spacing(2),
+  },
+  listHeader: {
+    display: 'flex',
+    marginTop: theme.spacing(3),
+  },
+  typoSpacing: {
+    marginRight: theme.spacing(1),
   },
 }));
 
 const ProductList = () => {
   const classes = useStyles();
 
-  const {
-    productList,
-    setProductList,
-    showFullList,
-    setShowFullList,
-  } = useContext(ProductsContext);
+  const { productList, setProductList, keyword, include } = useContext(
+    ProductsContext
+  );
 
-  const getAllProductLists = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/products');
-      const jsonData = await res.json();
-      setProductList(jsonData);
-    } catch (error) {
-      console.error(error.message);
+  const RenderText = () => {
+    if (keyword && include) {
+      return (
+        <Typography variant="h5" className={classes.typoSpacing}>
+          {' '}
+          with{' '}
+        </Typography>
+      );
+    } else if (keyword && !include)
+      return (
+        <Typography variant="h5" className={classes.typoSpacing}>
+          {' '}
+          without{' '}
+        </Typography>
+      );
+    else {
+      return null;
     }
   };
 
-  useEffect(() => {
-    // const test = document.querySelector('.search-input').value;
-    // if (test.length <= 0) {
-    //   getAllProductLists();
-    // }
-    // if (showFullList === true) {
-    //   getAllProductLists();
-    // }
-  }, [showFullList]);
+  useEffect(() => {}, [setProductList]);
 
   return (
-    <Grid container spacing={3} className={classes.root}>
-      {productList.map((data) => {
-        return <ProductCard data={data} key={data.product_id} />;
-      })}
-    </Grid>
+    <>
+      <div className={classes.listHeader}>
+        <Typography variant="h5" className={classes.typoSpacing}>
+          Product List{' '}
+        </Typography>
+        <RenderText />
+        <Typography variant="h5" className={classes.typoSpacing}>
+          {keyword}
+        </Typography>
+      </div>
+      <Grid container spacing={3} className={classes.root}>
+        {productList.map((data) => {
+          return <ProductCard data={data} key={data.product_id} />;
+        })}
+      </Grid>
+    </>
   );
 };
 

@@ -14,7 +14,8 @@ const search_product = async (req, res) => {
                           product.name AS product_name, 
                           pet_type.type AS pet_type, 
                           product_type.type AS product_type, 
-                          product.img_url AS product_img_url
+                          product.img_url AS product_img_url,
+                          product.description AS product_desc
                           FROM product 
                           JOIN pet_type ON pet_type.id = product.pet_type_id 
                           JOIN product_type ON product_type.id = product.product_type_id 

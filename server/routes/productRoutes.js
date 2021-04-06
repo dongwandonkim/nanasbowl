@@ -20,7 +20,7 @@ router.post(
 );
 
 //all products
-router.get('/', productController.product_index);
+// router.get('/', productController.product_index);
 
 //product detail
 router.get('/:id', productController.product_details);
@@ -29,6 +29,10 @@ router.get('/:id', productController.product_details);
 router.delete('/:id', productController.product_delete);
 
 //UPDATE a product
-router.put('/:id/edit', productController.product_update);
+router.put(
+  '/:id/edit',
+  upload.single('image'),
+  productController.product_update
+);
 
 module.exports = router;

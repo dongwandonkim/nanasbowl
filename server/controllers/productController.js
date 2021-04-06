@@ -5,24 +5,26 @@ const { uploadImage, getSignedUrl } = require('../s3');
 
 //product_index, product_details, product_create_post, product_delete, product_update
 
-const product_index = async (req, res) => {
-  try {
-    const allProducts = await pool.query(
-      `SELECT product.id AS product_id, 
-              product.name AS product_name, 
-              product.created_at AS product_created, 
-              product_type.type AS product_type, 
-              pet_type.type AS pet_type FROM product, 
-              product_type, pet_type 
-                    WHERE product.product_type_id = product_type.id 
-                    AND product.pet_type_id = pet_type.id LIMIT 12`
-    );
+// const product_index = async (req, res) => {
+//   try {
+//     const allProducts = await pool.query(
+//       `SELECT product.id AS product_id,
+//               product.name AS product_name,
+//               product.created_at AS product_created,
+//               product.description AS product_desc,
+//               product_type.type AS product_type,
+//               product.img_url AS product_img_url,
+//               pet_type.type AS pet_type
+//                   FROM product, product_type, pet_type
+//                     WHERE product.product_type_id = product_type.id
+//                     AND product.pet_type_id = pet_type.id LIMIT 12`
+//     );
 
-    res.json(allProducts.rows);
-  } catch (error) {
-    console.error(error.message);
-  }
-};
+//     res.json(allProducts.rows);
+//   } catch (error) {
+//     console.error(error.message);
+//   }
+// };
 
 const product_details = async (req, res) => {
   try {
@@ -142,13 +144,34 @@ const product_delete = async (req, res) => {
 
 const product_update = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, product_type, pet_type, description } = req.body;
+    console.log(req.body);
+    const parseData = JSON.parse(req.body.product_info);
 
-    const updateProduct = await pool.query(
-      'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4 WHERE product.id = $5',
-      [name, product_type, pet_type, description, id]
-    );
+    const { name, product_type, pet_type, description } = parseData;
+
+    const { id } = req.params;
+    // const { name, product_type, pet_type, description } = req.body;
+
+    let updateProduct;
+
+    if (req.file) {
+      const file = req.file;
+      const fileStream = fs.createReadStream(file.path);
+
+      const imgId = uuidv4();
+      await uploadImage(`upload/${imgId}`, fileStream, req.file.mimetype);
+
+      updateProduct = await pool.query(
+        'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4, img_url = $5 WHERE product.id = $6',
+        [name, product_type, pet_type, description, `upload/${imgId}`, id]
+      );
+    } else {
+      updateProduct = await pool.query(
+        'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4  WHERE product.id = $5',
+        [name, product_type, pet_type, description, id]
+      );
+    }
+
     res.json(updateProduct);
   } catch (error) {
     console.error(error.message);
@@ -156,7 +179,6 @@ const product_update = async (req, res) => {
 };
 
 module.exports = {
-  product_index,
   product_details,
   product_create_post,
   product_delete,

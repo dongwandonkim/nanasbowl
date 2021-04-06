@@ -9,7 +9,6 @@ import {
   Grid,
   InputBase,
   IconButton,
-  Link,
   Switch,
   Typography,
 } from '@material-ui/core';
@@ -62,12 +61,15 @@ const Search = () => {
   const formRef = useRef(null);
 
   const [searchInput, setSearchInput] = useState('');
-  const [include, setInclude] = useState(true);
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
-  const { productList, setProductList, setKeyword } = useContext(
-    ProductsContext
-  );
+  const {
+    productList,
+    setProductList,
+    setKeyword,
+    include,
+    setInclude,
+  } = useContext(ProductsContext);
 
   const handleToggle = () => {
     setToggleDrawer(!toggleDrawer);
@@ -80,7 +82,6 @@ const Search = () => {
     getSearchedProduct();
     formRef.current.select();
   };
-
   const getSearchedProduct = async () => {
     try {
       const res = await fetch(
@@ -95,7 +96,7 @@ const Search = () => {
     setKeyword(searchInput);
   };
   useEffect(() => {
-    // console.log(productList);
+    // getSearchedProduct();
   }, [productList]);
   return (
     <>
@@ -106,7 +107,7 @@ const Search = () => {
           }}
         >
           <Toolbar>
-            <Grid container rows alignItems="center">
+            <Grid container alignItems="center">
               <Grid item>
                 <IconButton
                   className={classes.menuButton}
@@ -129,7 +130,9 @@ const Search = () => {
               <Grid item className={classes.switch} xs={3} sm={3} md={2}>
                 <Switch
                   checked={include}
-                  onChange={() => setInclude(!include)}
+                  onChange={() => {
+                    setInclude(!include);
+                  }}
                   color="default"
                 />
                 {include ? 'Include' : 'Exclude'}
