@@ -4,11 +4,11 @@ require('dotenv').config();
 console.log(process.env.PGUSER);
 
 const pool = new Pool({
-  user: process.env.PGUSER,
+  user: 'ubuntu',
   password: 'ehddhks1',
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  database: process.env.PGDATABASE,
+  host: 'localhost',
+  port: '5432',
+  database: 'nanasbowl',
 });
 
 module.exports = pool;
