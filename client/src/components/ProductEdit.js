@@ -46,7 +46,6 @@ const ProductEdit = () => {
 
   let { id } = useParams();
   const history = useHistory();
-  const baseURL = 'http://localhost:5000/products/';
 
   const imageSelectHandler = (e) => {
     setProductImage(e.target.files[0]);
