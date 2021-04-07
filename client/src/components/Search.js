@@ -1,6 +1,7 @@
-import { useState, useContext, useRef, useEffect } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
+import apiCalls from '../apis/apiCalls';
 
 import {
   AppBar,
@@ -63,13 +64,9 @@ const Search = () => {
   const [searchInput, setSearchInput] = useState('');
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
-  const {
-    productList,
-    setProductList,
-    setKeyword,
-    include,
-    setInclude,
-  } = useContext(ProductsContext);
+  const { setProductList, setKeyword, include, setInclude } = useContext(
+    ProductsContext
+  );
 
   const handleToggle = () => {
     setToggleDrawer(!toggleDrawer);
@@ -84,20 +81,16 @@ const Search = () => {
   };
   const getSearchedProduct = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/search/?keyword=${searchInput}&include=${include}`
+      const res = await apiCalls.get(
+        `/search/?keyword=${searchInput}&include=${include}`
       );
-      const parsedResult = await res.json();
-
-      setProductList(parsedResult);
+      setProductList(res.data);
     } catch (error) {
       console.error(error.message);
     }
     setKeyword(searchInput);
   };
-  useEffect(() => {
-    // getSearchedProduct();
-  }, [productList]);
+
   return (
     <>
       <AppBar position="static" className={classes.root}>

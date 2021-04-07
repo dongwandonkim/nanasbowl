@@ -132,11 +132,16 @@ const product_create_post = async (req, res) => {
 const product_delete = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteProduct = await pool.query(
+    const response = await pool.query(
       'DELETE FROM product WHERE product.id = $1',
       [id]
     );
-    res.json(`Product id:${id} was deleted successfully`);
+    res.status(204).json({
+      status: 'success',
+      data: {
+        product: response.rows[0],
+      },
+    });
   } catch (error) {
     console.error(error.message);
   }
@@ -144,7 +149,6 @@ const product_delete = async (req, res) => {
 
 const product_update = async (req, res) => {
   try {
-    console.log(req.body);
     const parseData = JSON.parse(req.body.product_info);
 
     const { name, product_type, pet_type, description } = parseData;

@@ -19,9 +19,7 @@ const useStyles = makeStyles((theme) => ({
 const ProductList = () => {
   const classes = useStyles();
 
-  const { productList, setProductList, keyword, include } = useContext(
-    ProductsContext
-  );
+  const { productList, keyword, include } = useContext(ProductsContext);
 
   const RenderText = () => {
     if (keyword && include) {
@@ -42,8 +40,6 @@ const ProductList = () => {
       return null;
     }
   };
-
-  useEffect(() => {}, [setProductList]);
 
   return (
     <>

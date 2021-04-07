@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
+import apiCalls from '../apis/apiCalls';
 import {
   Grid,
   TextField,
@@ -56,14 +57,14 @@ const ProductEdit = () => {
   useEffect(() => {
     const getProductDetail = async () => {
       try {
-        const productDetail = await fetch(baseURL + id);
-        const jsonData = await productDetail.json();
-        setProductName(jsonData[0].product_name);
-        setProductType(jsonData[0].product_type_id);
-        setPetType(jsonData[0].pet_type_id);
-        setProductDesc(jsonData[0].product_description);
-        setIngredients(jsonData[0].ingredient_names);
-        setOriginalImage(jsonData[1]);
+        const res = await apiCalls.get('/products/' + id);
+        console.log(res.data);
+        setProductName(res.data[0].product_name);
+        setProductType(res.data[0].product_type_id);
+        setPetType(res.data[0].pet_type_id);
+        setProductDesc(res.data[0].product_description);
+        setIngredients(res.data[0].ingredient_names);
+        setOriginalImage(res.data[1]);
       } catch (error) {
         console.error(error.message);
       }
@@ -88,12 +89,8 @@ const ProductEdit = () => {
       }
       formData.append('product_info', JSON.stringify(body));
 
-      await fetch(baseURL + id + '/edit', {
-        method: 'PUT',
-        body: formData,
-      });
-
-      history.push('/');
+      await apiCalls.put('/products/' + id + '/edit', formData);
+      history.push('/products');
     } catch (error) {
       console.error(error.message);
     }

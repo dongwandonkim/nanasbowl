@@ -1,6 +1,7 @@
 import { useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
+import apiCalls from '../apis/apiCalls';
 import {
   Button,
   ButtonGroup,
@@ -13,8 +14,6 @@ import {
 } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-const baseURL = 'http://localhost:5000/products/';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,10 +56,9 @@ const ProductDetail = () => {
 
   const deleteProduct = async () => {
     try {
-      await fetch(baseURL + id, {
-        method: 'DELETE',
-      });
-      history.push('/');
+      await apiCalls.delete('products/' + id);
+
+      history.push('/products');
     } catch (error) {
       console.error(error.message);
     }
@@ -69,9 +67,9 @@ const ProductDetail = () => {
   useEffect(() => {
     const getProductDetail = async () => {
       try {
-        const productDetail = await fetch(baseURL + id);
-        const jsonData = await productDetail.json();
-        setProductInfo(jsonData);
+        // const productDetail = await fetch(baseURL + id);
+        const res = await apiCalls.get('/products/' + id);
+        setProductInfo(res.data);
       } catch (error) {
         console.error(error.message);
       }

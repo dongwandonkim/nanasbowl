@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import apiCalls from '../apis/apiCalls';
 import {
   Grid,
   TextField,
@@ -98,15 +99,9 @@ const ProductCreate = () => {
       formData.append('image_name', productImageName);
       formData.append('product_info', JSON.stringify(body));
 
-      await fetch('http://localhost:5000/products/create', {
-        method: 'POST',
-        // headers: { 'Content-Type': 'application/json' },
-        // headers: { 'Content-Type': 'multipart/form-data' },
-        // body: JSON.stringify(body),
-        body: formData,
-      });
+      await apiCalls.post('/products/create', formData);
 
-      history.push('/');
+      history.push('/products');
     } catch (error) {
       console.error(error.message);
     }
@@ -131,13 +126,13 @@ const ProductCreate = () => {
                 style={{ display: 'none' }}
               />
             </Button>
-            {previewImage ? (
+            {previewImage && (
               <CardMedia
                 className={classes.preview}
-                src={previewImage}
+                image={previewImage}
                 alt="preview"
               ></CardMedia>
-            ) : null}
+            )}
             <TextField
               variant="standard"
               label="Product Name"

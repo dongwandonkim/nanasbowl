@@ -15,8 +15,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 //routes
-app.use('/products', productRoutes);
-app.use('/search', searchRoutes);
+app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/search', searchRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port:${PORT}`);
