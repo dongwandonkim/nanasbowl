@@ -4,6 +4,7 @@ import { ProductsContext } from '../context/ProductsContext';
 import apiCalls from '../apis/apiCalls';
 
 import {
+  Container,
   AppBar,
   makeStyles,
   Toolbar,
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   switch: {
-    marginRight: theme.spacing(3),
+    marginRight: theme.spacing(2),
   },
 }));
 
@@ -74,7 +75,7 @@ const Search = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    setKeyword(searchInput);
+    setKeyword(searchInput.toLowerCase());
     history.push('/products');
     getSearchedProduct();
     formRef.current.select();
@@ -94,61 +95,63 @@ const Search = () => {
   return (
     <>
       <AppBar position="static" className={classes.root}>
-        <form
-          onSubmit={(e) => {
-            onSubmit(e);
-          }}
-        >
-          <Toolbar>
-            <Grid container alignItems="center">
-              <Grid item>
-                <IconButton
-                  className={classes.menuButton}
-                  color="inherit"
-                  aria-label="Menu"
-                  onClick={handleToggle}
-                >
-                  <MenuIcon />
-                </IconButton>
+        <Container maxWidth="lg">
+          <form
+            onSubmit={(e) => {
+              onSubmit(e);
+            }}
+          >
+            <Toolbar>
+              <Grid container alignItems="center">
+                <Grid item>
+                  <IconButton
+                    className={classes.menuButton}
+                    color="inherit"
+                    aria-label="Menu"
+                    onClick={handleToggle}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    className={classes.title}
+                    onClick={() => history.push('/')}
+                  >
+                    Nana's Bowl
+                  </Typography>
+                </Grid>
+                <Grid item className={classes.grow} />
+                <Grid item className={classes.switch} xs={3} sm={3} md={2}>
+                  <Switch
+                    checked={include}
+                    onChange={() => {
+                      setInclude(!include);
+                    }}
+                    color="default"
+                  />
+                  {include ? 'Include' : 'Exclude'}
+                </Grid>
+                <Grid item xs={6} sm={5} md={5} lg={5} className={classes.grow}>
+                  <InputBase
+                    className={classes.searchInput}
+                    placeholder="Search by Ingredient"
+                    startAdornment={<SearchIcon fontSize="small" />}
+                    value={searchInput}
+                    inputRef={formRef}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                  />
+                </Grid>
+                <Grid className={classes.grow}></Grid>
+                <Grid item className={classes.mobileHidden}>
+                  <IconButton>
+                    <AccountCircleIcon />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Typography
-                  className={classes.title}
-                  onClick={() => history.push('/')}
-                >
-                  Nana's Bowl
-                </Typography>
-              </Grid>
-              <Grid item className={classes.grow} />
-              <Grid item className={classes.switch} xs={3} sm={3} md={2}>
-                <Switch
-                  checked={include}
-                  onChange={() => {
-                    setInclude(!include);
-                  }}
-                  color="default"
-                />
-                {include ? 'Include' : 'Exclude'}
-              </Grid>
-              <Grid item xs={6} sm={5} md={5} lg={5} className={classes.grow}>
-                <InputBase
-                  className={classes.searchInput}
-                  placeholder="Search by Ingredient"
-                  startAdornment={<SearchIcon fontSize="small" />}
-                  value={searchInput}
-                  inputRef={formRef}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                />
-              </Grid>
-              <Grid className={classes.grow}></Grid>
-              <Grid item className={classes.mobileHidden}>
-                <IconButton>
-                  <AccountCircleIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Toolbar>
-        </form>
+            </Toolbar>
+          </form>
+        </Container>
       </AppBar>
       <SideMenu open={toggleDrawer} toggle={handleToggle} />
     </>

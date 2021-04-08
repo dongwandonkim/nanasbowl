@@ -1,5 +1,8 @@
 const pool = require('../db');
 const fs = require('fs');
+const util = require('util');
+const unlinkFile = util.promisify(fs.unlink);
+
 const { v4: uuidv4 } = require('uuid');
 const { uploadImage, getSignedUrl } = require('../s3');
 
@@ -31,8 +34,6 @@ const product_details = async (req, res) => {
     const { id } = req.params;
 
     const productDetail = await pool.query(
-      // 'SELECT product.name AS product_name, product.description AS product_description, product.created_at AS product_created, ingredient.name AS ingredient_name FROM product JOIN ingredient_product ON ingredient_product.product_id = product.id JOIN ingredient ON ingredient.id = ingredient_product.ingredient_id WHERE ingredient_product.product_id = $1',
-      // [id]
       `SELECT p.name AS product_name, 
               p.product_type_id AS product_type_id, 
               p.pet_type_id AS pet_type_id, 
@@ -61,19 +62,8 @@ const product_details = async (req, res) => {
   }
 };
 
-// json.stringify(body)
-// {
-//   name: '222222',
-//   product_type: 1,
-//   pet_type: 1,
-//   ingredients: [ '222', '222234', '423124', '6657656' ],
-//   description: '22222'
-// }
-
 const product_create_post = async (req, res) => {
   try {
-    // const { name, product_type, pet_type, ingredients, description } = req.body;
-
     const parseData = JSON.parse(req.body.product_info);
 
     const {
@@ -89,6 +79,9 @@ const product_create_post = async (req, res) => {
 
     const id = uuidv4();
     await uploadImage(`upload/${id}`, fileStream, req.file.mimetype);
+
+    //delete upload/imgs after uploading to s3 is complete
+    await unlinkFile(file.path);
 
     //INSERT INTO product
     await pool.query(
@@ -154,7 +147,6 @@ const product_update = async (req, res) => {
     const { name, product_type, pet_type, description } = parseData;
 
     const { id } = req.params;
-    // const { name, product_type, pet_type, description } = req.body;
 
     let updateProduct;
 
@@ -165,13 +157,23 @@ const product_update = async (req, res) => {
       const imgId = uuidv4();
       await uploadImage(`upload/${imgId}`, fileStream, req.file.mimetype);
 
+      //delete upload/imgs after uploading to s3 is complete
+      await unlinkFile(file.path);
+
       updateProduct = await pool.query(
-        'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4, img_url = $5 WHERE product.id = $6',
+        `UPDATE product 
+            SET name = $1, product_type_id = $2, 
+                pet_type_id = $3, description = $4, 
+                img_url = $5 
+                WHERE product.id = $6`,
         [name, product_type, pet_type, description, `upload/${imgId}`, id]
       );
     } else {
       updateProduct = await pool.query(
-        'UPDATE product SET name = $1, product_type_id = $2, pet_type_id = $3, description = $4  WHERE product.id = $5',
+        `UPDATE product 
+            SET name = $1, product_type_id = $2, 
+                pet_type_id = $3, description = $4  
+                WHERE product.id = $5`,
         [name, product_type, pet_type, description, id]
       );
     }

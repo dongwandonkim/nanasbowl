@@ -8,7 +8,6 @@ const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-console.log(process.env.PORT);
 
 //middleware & static
 app.use(cors());

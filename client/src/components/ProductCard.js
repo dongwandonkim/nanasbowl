@@ -19,8 +19,8 @@ const useStyles = makeStyles({
     minHeight: '100%',
   },
   media: {
-    minHeight: '250px',
-    minWidth: '100%',
+    minHeight: '190px',
+    minWidth: '190px',
   },
 });
 

@@ -17,12 +17,20 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(3),
     padding: theme.spacing(3),
   },
+  imgBox: {
+    paddingBottom: '100%',
+
+    position: 'relative',
+  },
   image: {
-    height: '500px',
-    width: '450px',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    height: '100%',
+    objectFit: 'scale-down',
   },
   divider: {
     height: '100%',
@@ -78,21 +86,25 @@ const ProductDetail = () => {
   }, [setProductInfo, id, keyword]);
 
   return (
-    <Grid container className={classes.root}>
+    <Grid container justify="center">
       <Grid item xs={12} md={6}>
-        {productInfo[1] ? (
-          productInfo[1] ? (
-            <CardMedia
-              className={classes.image}
-              image={productInfo[1]}
-            ></CardMedia>
-          ) : (
-            <CircularProgress />
-          )
-        ) : null}
+        <div className={classes.imgBox}>
+          {productInfo[1] ? (
+            productInfo[1] ? (
+              <CardMedia
+                component="img"
+                className={classes.image}
+                image={productInfo[1]}
+              ></CardMedia>
+            ) : (
+              <CircularProgress />
+            )
+          ) : null}
+        </div>
       </Grid>
+
       <Grid item xs={12} md={6}>
-        <Grid container>
+        <Grid container justify="center">
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.productName}>
               {productInfo[0] && productInfo[0].product_name}

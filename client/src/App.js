@@ -13,7 +13,7 @@ import { CssBaseline, makeStyles, Container } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   appMain: {
-    paddingTop: theme.spacing(3),
+    maxWidth: '1280px',
   },
 }));
 
@@ -21,8 +21,8 @@ function App() {
   const styles = useStyles();
   return (
     <ProductsContextProvider>
-      <Container maxWidth="lg" className={styles.appMain}>
-        <Search />
+      <Search />
+      <Container className={styles.appMain}>
         <Switch>
           <Route exact path="/" component={Main} />
           <Route exact path="/products" component={ProductList} />

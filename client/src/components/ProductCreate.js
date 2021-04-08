@@ -46,7 +46,6 @@ const ProductCreate = () => {
   const [previewImage, setPreviewImage] = useState(null);
 
   const imageSelectHandler = (e) => {
-    // console.log(e.target.files[0]);
     setProductImage(e.target.files[0]);
     setProductImageName(e.target.value);
     setPreviewImage(URL.createObjectURL(e.target.files[0]));
@@ -109,7 +108,7 @@ const ProductCreate = () => {
   return (
     <Container maxWidth="lg">
       <form className={classes.form} onSubmit={onSubmitForm}>
-        <Grid container>
+        <Grid container justify="center">
           <Grid item xs={6}>
             <Button
               variant="contained"
@@ -174,7 +173,7 @@ const ProductCreate = () => {
             <TextField
               multiline
               variant="outlined"
-              rows={12}
+              rows={10}
               label="Product Description"
               value={productDesc}
               onChange={(e) => {
@@ -184,7 +183,7 @@ const ProductCreate = () => {
             <TextField
               multiline
               variant="outlined"
-              rows={12}
+              rows={10}
               label="Product Ingredients"
               onChange={(e) => {
                 parseIngredients(e.target.value);

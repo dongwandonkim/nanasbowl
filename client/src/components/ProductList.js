@@ -1,15 +1,16 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { Grid, makeStyles, Typography, Container } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(2),
+    margin: theme.spacing(2),
   },
+
   listHeader: {
     display: 'flex',
-    marginTop: theme.spacing(3),
+    margin: '24px 0',
   },
   typoSpacing: {
     marginRight: theme.spacing(1),
@@ -42,7 +43,7 @@ const ProductList = () => {
   };
 
   return (
-    <>
+    <Container>
       <div className={classes.listHeader}>
         <Typography variant="h5" className={classes.typoSpacing}>
           Product List{' '}
@@ -52,12 +53,12 @@ const ProductList = () => {
           {keyword}
         </Typography>
       </div>
-      <Grid container spacing={3} className={classes.root}>
+      <Grid container spacing={3}>
         {productList.map((data) => {
           return <ProductCard data={data} key={data.product_id} />;
         })}
       </Grid>
-    </>
+    </Container>
   );
 };
 
