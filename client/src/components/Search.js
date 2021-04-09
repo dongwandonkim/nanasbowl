@@ -64,6 +64,7 @@ const Search = () => {
 
   const handleLogo = () => {
     setSearchInput('');
+    history.push('/');
   };
 
   const onSubmit = (e) => {

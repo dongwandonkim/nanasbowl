@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
   },
   imgBox: {
     paddingBottom: '100%',
-
     position: 'relative',
   },
   image: {
+    padding: '10%',
     position: 'absolute',
     left: 0,
     top: 0,
@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
   selectedIngredient: {
     backgroundColor: 'pink',
     borderRadius: '3px',
-    // padding: '2px',
   },
   productName: {
     textTransform: 'uppercase',
