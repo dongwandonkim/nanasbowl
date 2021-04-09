@@ -45,7 +45,7 @@ const search_product = async (req, res) => {
       );
     }
 
-    const abc = response.rows.map((data) => {
+    const result = response.rows.map((data) => {
       if (data.product_img_url == null) return data;
       return getSignedUrl(data.product_img_url).then((res) => {
         data.signedUrl = res;
@@ -53,7 +53,7 @@ const search_product = async (req, res) => {
       });
     });
 
-    Promise.all(abc).then((result) => {
+    Promise.all(result).then((result) => {
       res.json(result);
     });
   } catch (error) {

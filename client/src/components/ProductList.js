@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
-import { Grid, makeStyles, Typography, Container } from '@material-ui/core';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
 
   listHeader: {
     display: 'flex',
-    margin: '24px 0',
+    marginBottom: theme.spacing(2),
   },
   typoSpacing: {
     marginRight: theme.spacing(1),
@@ -43,7 +43,7 @@ const ProductList = () => {
   };
 
   return (
-    <Container>
+    <>
       <div className={classes.listHeader}>
         <Typography variant="h5" className={classes.typoSpacing}>
           Product List{' '}
@@ -53,12 +53,12 @@ const ProductList = () => {
           {keyword}
         </Typography>
       </div>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {productList.map((data) => {
           return <ProductCard data={data} key={data.product_id} />;
         })}
       </Grid>
-    </Container>
+    </>
   );
 };
 

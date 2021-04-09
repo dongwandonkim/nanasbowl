@@ -103,117 +103,113 @@ const ProductEdit = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <form className={classes.form} onSubmit={onSubmitForm}>
-        <Grid container justify="center">
-          <Grid item xs={6}>
+    <form className={classes.form} onSubmit={onSubmitForm}>
+      <Grid container justify="center">
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            component="label"
+            startIcon={<ImageIcon />}
+            color="primary"
+          >
+            Upload Image
+            <input
+              type="file"
+              file={productImage}
+              value={productImageName}
+              onChange={(e) => imageSelectHandler(e)}
+              style={{ display: 'none' }}
+            />
+          </Button>
+          <Card className={classes.imgContainer}>
+            {originalImage || previewImage ? (
+              previewImage ? (
+                <CardMedia
+                  className={classes.image}
+                  image={previewImage}
+                  alt="preview"
+                ></CardMedia>
+              ) : (
+                <CardMedia
+                  className={classes.image}
+                  image={originalImage}
+                ></CardMedia>
+              )
+            ) : null}
+          </Card>
+          <TextField
+            variant="standard"
+            label="Product Name"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+          />
+          <FormControl>
+            <InputLabel id="pet_type-label">Pet Type</InputLabel>
+            <Select
+              labelId="pet_type-label"
+              label="Pet Type"
+              value={petType ? petType : ''}
+              defaultValue=""
+              onChange={(e) => {
+                setPetType(e.target.value);
+              }}
+            >
+              <MenuItem value="1">Dog</MenuItem>
+              <MenuItem value="2">Cat</MenuItem>
+            </Select>
+            <FormHelperText>Required</FormHelperText>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="product_type-label">Product Type</InputLabel>
+            <Select
+              labelId="product_type-label"
+              label="Product Type"
+              value={productType ? productType : ''}
+              defaultValue=""
+              onChange={(e) => {
+                setProductType(e.target.value);
+              }}
+            >
+              <MenuItem value={`1`}>Dry</MenuItem>
+              <MenuItem value={`2`}>Canned</MenuItem>
+              <MenuItem value={`3`}>Freeze-Dried</MenuItem>
+              <MenuItem value={`4`}>Raw</MenuItem>
+              <MenuItem value={`5`}>Treat</MenuItem>
+            </Select>
+            <FormHelperText>Required</FormHelperText>
+          </FormControl>
+          <TextField
+            multiline
+            variant="outlined"
+            rows={12}
+            label="Product Description"
+            value={productDesc}
+            onChange={(e) => {
+              setProductDesc(e.target.value);
+            }}
+          />
+          <TextField
+            multiline
+            variant="outlined"
+            rows={12}
+            label="Product Ingredients"
+            value={ingredients}
+            disabled
+          />
+
+          <FormControl>
             <Button
               variant="contained"
-              component="label"
-              startIcon={<ImageIcon />}
+              type="submit"
               color="primary"
+              startIcon={<SaveIcon />}
             >
-              Upload Image
-              <input
-                type="file"
-                file={productImage}
-                value={productImageName}
-                onChange={(e) => imageSelectHandler(e)}
-                style={{ display: 'none' }}
-              />
+              Create
             </Button>
-            <Card className={classes.imgContainer}>
-              {originalImage || previewImage ? (
-                previewImage ? (
-                  <CardMedia
-                    className={classes.image}
-                    image={previewImage}
-                    alt="preview"
-                  ></CardMedia>
-                ) : (
-                  <CardMedia
-                    className={classes.image}
-                    image={originalImage}
-                  ></CardMedia>
-                )
-              ) : (
-                <CircularProgress />
-              )}
-            </Card>
-            <TextField
-              variant="standard"
-              label="Product Name"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-            />
-            <FormControl>
-              <InputLabel id="pet_type-label">Pet Type</InputLabel>
-              <Select
-                labelId="pet_type-label"
-                label="Pet Type"
-                value={petType ? petType : ''}
-                defaultValue=""
-                onChange={(e) => {
-                  setPetType(e.target.value);
-                }}
-              >
-                <MenuItem value="1">Dog</MenuItem>
-                <MenuItem value="2">Cat</MenuItem>
-              </Select>
-              <FormHelperText>Required</FormHelperText>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="product_type-label">Product Type</InputLabel>
-              <Select
-                labelId="product_type-label"
-                label="Product Type"
-                value={productType ? productType : ''}
-                defaultValue=""
-                onChange={(e) => {
-                  setProductType(e.target.value);
-                }}
-              >
-                <MenuItem value={`1`}>Dry</MenuItem>
-                <MenuItem value={`2`}>Canned</MenuItem>
-                <MenuItem value={`3`}>Freeze-Dried</MenuItem>
-                <MenuItem value={`4`}>Raw</MenuItem>
-                <MenuItem value={`5`}>Treat</MenuItem>
-              </Select>
-              <FormHelperText>Required</FormHelperText>
-            </FormControl>
-            <TextField
-              multiline
-              variant="outlined"
-              rows={12}
-              label="Product Description"
-              value={productDesc}
-              onChange={(e) => {
-                setProductDesc(e.target.value);
-              }}
-            />
-            <TextField
-              multiline
-              variant="outlined"
-              rows={12}
-              label="Product Ingredients"
-              value={ingredients}
-              disabled
-            />
-
-            <FormControl>
-              <Button
-                variant="contained"
-                type="submit"
-                color="primary"
-                startIcon={<SaveIcon />}
-              >
-                Create
-              </Button>
-            </FormControl>
-          </Grid>
+          </FormControl>
         </Grid>
-      </form>
-    </Container>
+      </Grid>
+    </form>
   );
 };
 

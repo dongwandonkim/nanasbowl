@@ -22,6 +22,9 @@ const useStyles = makeStyles({
     minHeight: '190px',
     minWidth: '190px',
   },
+  actionArea: {
+    height: '100%',
+  },
 });
 
 const ProductCard = (props) => {
@@ -36,6 +39,7 @@ const ProductCard = (props) => {
     <Grid item xs={12} sm={6} md={4}>
       <Card className={classes.root}>
         <CardActionArea
+          className={classes.actionArea}
           onClick={() => history.push(`/products/${props.data.product_id}`)}
         >
           {props.data.signedUrl ? (

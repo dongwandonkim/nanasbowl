@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import apiCalls from '../apis/apiCalls';
@@ -13,12 +13,14 @@ import {
   IconButton,
   Switch,
   Typography,
+  MenuItem,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import SideMenu from './SideMenu';
+import ProductList from './ProductList';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -76,21 +78,25 @@ const Search = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     setKeyword(searchInput.toLowerCase());
-    history.push('/products');
-    getSearchedProduct();
+    history.push('/');
+    // getSearchedProduct();
     formRef.current.select();
   };
-  const getSearchedProduct = async () => {
-    try {
-      const res = await apiCalls.get(
-        `/search/?keyword=${searchInput}&include=${include}`
-      );
-      setProductList(res.data);
-    } catch (error) {
-      console.error(error.message);
-    }
-    setKeyword(searchInput);
-  };
+
+  useEffect(() => {
+    const getSearchedProduct = async () => {
+      try {
+        const res = await apiCalls.get(
+          `/search/?keyword=${searchInput}&include=${include}`
+        );
+        setProductList(res.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+      setKeyword(searchInput);
+    };
+    getSearchedProduct();
+  }, [include, searchInput, setKeyword, setProductList]);
 
   return (
     <>
@@ -114,12 +120,22 @@ const Search = () => {
                   </IconButton>
                 </Grid>
                 <Grid item>
-                  <Typography
+                  <MenuItem
+                    className={classes.title}
+                    onClick={() => {
+                      history.push('/');
+                    }}
+                  >
+                    Nana's Bowl
+                  </MenuItem>
+                </Grid>
+                <Grid item>
+                  <MenuItem
                     className={classes.title}
                     onClick={() => history.push('/')}
                   >
-                    Nana's Bowl
-                  </Typography>
+                    All Products
+                  </MenuItem>
                 </Grid>
                 <Grid item className={classes.grow} />
                 <Grid item className={classes.switch} xs={3} sm={3} md={2}>
