@@ -31,7 +31,13 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(1),
     },
   },
-
+  addProduct: {
+    display: 'none',
+    cursor: 'pointer',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
   searchInput: {
     opacity: '0.8',
     padding: '0px 8px',
@@ -134,6 +140,25 @@ const Search = () => {
                   onChange={(e) => setSearchInput(e.target.value)}
                 />
               </Grid>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              md={3}
+              lg={2}
+              className={classes.addProduct}
+            >
+              <Typography
+                variant="body1"
+                noWrap
+                className={classes.title}
+                onClick={() => {
+                  history.push('/products/create');
+                }}
+              >
+                Add Product
+              </Typography>
             </Grid>
           </Toolbar>
         </form>
