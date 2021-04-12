@@ -65,7 +65,7 @@ const ProductDetail = () => {
     try {
       await apiCalls.delete('products/' + id);
 
-      history.push('/products');
+      history.push('/');
     } catch (error) {
       console.error(error.message);
     }

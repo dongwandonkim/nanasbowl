@@ -1,5 +1,6 @@
 const pool = require('../db');
 const fs = require('fs');
+const path = require('path');
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 
@@ -75,6 +76,7 @@ const product_create_post = async (req, res) => {
     } = parseData;
 
     const file = req.file;
+
     const fileStream = fs.createReadStream(file.path);
 
     const id = uuidv4();

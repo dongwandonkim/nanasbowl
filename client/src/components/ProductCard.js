@@ -7,7 +7,6 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  Button,
   makeStyles,
   Grid,
   CircularProgress,
@@ -17,6 +16,8 @@ const useStyles = makeStyles({
   root: {
     maxWidth: '100%',
     minHeight: '100%',
+    textTransform: 'uppercase',
+    display: 'block',
   },
   media: {
     minHeight: '190px',
@@ -60,14 +61,14 @@ const ProductCard = (props) => {
             />
           )}
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
+            <Typography gutterBottom variant="h5">
               {props.data.product_name}
             </Typography>
-            <Typography>{props.data.product_type}</Typography>
+
             {/* <Typography variant="body2" color="textSecondary" component="p"> */}
             <TextTruncate
-              line={2}
-              element="p"
+              line={3}
+              element="span"
               truncateText="…"
               text={props.data.product_desc}
               // textTruncateChild={<a href="#">Read on</a>}
@@ -75,13 +76,10 @@ const ProductCard = (props) => {
             {/* </Typography> */}
           </CardContent>
         </CardActionArea>
+
         <CardActions>
-          <Button size="small" color="primary">
-            Share
-          </Button>
-          <Button size="small" color="primary">
-            Learn More
-          </Button>
+          <Typography variant="body2">{props.data.product_type}</Typography>
+          <Typography variant="body2">{props.data.pet_type}</Typography>
         </CardActions>
       </Card>
     </Grid>

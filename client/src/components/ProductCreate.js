@@ -100,7 +100,7 @@ const ProductCreate = () => {
 
       await apiCalls.post('/products/create', formData);
 
-      history.push('/products');
+      history.push('/');
     } catch (error) {
       console.error(error.message);
     }

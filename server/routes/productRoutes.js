@@ -5,13 +5,6 @@ const multer = require('multer');
 
 const upload = multer({ dest: 'upload/' });
 
-// app.use('/image', express.static('./upload'));
-
-//root
-// router.get('/', (req, res) => {
-//   res.send('sites up');
-// });
-
 //create PRODUCT
 router.post(
   '/create',

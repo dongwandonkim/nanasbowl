@@ -11,14 +11,11 @@ import {
   FormHelperText,
   makeStyles,
   Button,
-  Container,
   CardMedia,
-  Paper,
   Card,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   form: {
