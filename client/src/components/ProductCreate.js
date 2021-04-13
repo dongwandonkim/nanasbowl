@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import apiCalls from '../apis/apiCalls';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 import {
   Grid,
   TextField,
@@ -8,14 +12,21 @@ import {
   MenuItem,
   Select,
   InputLabel,
-  FormHelperText,
+  Typography,
   makeStyles,
   Button,
-  Container,
   CardMedia,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
+
+const schema = yup.object().shape({
+  productName: yup.string().required('Product name is required.'),
+  productDesc: yup.string().required('Product Description is required'),
+  productIngredients: yup
+    .string()
+    .required('Product Ingredients list is required'),
+});
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -27,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   preview: {
     width: '200px',
     height: '200px',
+  },
+  errorMsg: {
+    color: 'red',
   },
 }));
 
@@ -81,8 +95,14 @@ const ProductCreate = () => {
     setIngredients(parsedIngredients);
   };
 
-  const onSubmitForm = async (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmitForm = async (data) => {
+    // e.preventDefault();
+    console.log(data);
 
     try {
       const body = {
@@ -105,8 +125,9 @@ const ProductCreate = () => {
       console.error(error.message);
     }
   };
+
   return (
-    <form className={classes.form} onSubmit={onSubmitForm}>
+    <form className={classes.form} onSubmit={handleSubmit(onSubmitForm)}>
       <Grid container justify="center">
         <Grid item xs={6}>
           <Button
@@ -131,11 +152,21 @@ const ProductCreate = () => {
               alt="preview"
             ></CardMedia>
           )}
+
           <TextField
+            name="productName"
+            {...register('productName', { required: 'it is required field' })}
             variant="standard"
             label="Product Name"
+            value={productName}
             onChange={(e) => setProductName(e.target.value)}
           />
+
+          {errors.productName && (
+            <Typography className={classes.errorMsg}>
+              {errors.productName.message}
+            </Typography>
+          )}
           <FormControl>
             <InputLabel id="pet_type-label">Pet Type</InputLabel>
             <Select
@@ -167,7 +198,12 @@ const ProductCreate = () => {
               <MenuItem value={`5`}>Treat</MenuItem>
             </Select>
           </FormControl>
+
           <TextField
+            // name="productDesc"
+            {...register('productDesc', {
+              required: 'Product description is required',
+            })}
             multiline
             variant="outlined"
             rows={10}
@@ -177,7 +213,17 @@ const ProductCreate = () => {
               setProductDesc(e.target.value);
             }}
           />
+          {errors.productDesc && (
+            <Typography className={classes.errorMsg}>
+              {errors.productDesc.message}
+            </Typography>
+          )}
+
           <TextField
+            // name="productIngredients"
+            {...register('productIngredients', {
+              required: 'Plese provide ingredients',
+            })}
             multiline
             variant="outlined"
             rows={10}
@@ -187,6 +233,12 @@ const ProductCreate = () => {
             }}
           />
           {parsingError}
+          {errors.productIngredients && (
+            <Typography className={classes.errorMsg}>
+              {errors.productIngredients.message}
+            </Typography>
+          )}
+
           <FormControl>
             <Button
               variant="contained"
