@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import apiCalls from '../apis/apiCalls';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
@@ -26,7 +26,23 @@ const schema = yup.object().shape({
   productIngredients: yup
     .string()
     .required('Product Ingredients list is required'),
+  // productType: yup.object().shape({
+  //   value: yup.string().required(),
+  //   text: yup.string().required(),
+  // }),
+  // petType: yup.number().required('please select a pet type'),
 });
+const petTypeMenu = [
+  { value: `1`, text: 'Dog' },
+  { value: `2`, text: 'Cat' },
+];
+const productTypeMenu = [
+  { value: `1`, text: 'Dry' },
+  { value: `2`, text: 'Canned' },
+  { value: `3`, text: 'Freeze-Dried' },
+  { value: `4`, text: 'Raw' },
+  { value: `5`, text: 'Treat' },
+];
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -48,7 +64,7 @@ const ProductCreate = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const [productName, setProductName] = useState('');
+  // const [productName, setProductName] = useState('');
   const [productType, setProductType] = useState(1);
   const [petType, setPetType] = useState(1);
   const [productDesc, setProductDesc] = useState('');
@@ -95,36 +111,41 @@ const ProductCreate = () => {
     setIngredients(parsedIngredients);
   };
 
+  const onSubmitForm = (data) => {
+    // e.preventDefault();
+    console.log(data);
+
+    // try {
+    //   const body = {
+    //     name: productName,
+    //     product_type: productType,
+    //     pet_type: petType,
+    //     ingredients,
+    //     description: productDesc,
+    //   };
+
+    //   const formData = new FormData();
+    //   formData.append('image', productImage);
+    //   formData.append('image_name', productImageName);
+    //   formData.append('product_info', JSON.stringify(body));
+
+    //   await apiCalls.post('/products/create', formData);
+
+    //   history.push('/');
+    // } catch (error) {
+    //   console.error(error.message);
+    // }
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmitForm = async (data) => {
-    // e.preventDefault();
-    console.log(data);
-
-    try {
-      const body = {
-        name: productName,
-        product_type: productType,
-        pet_type: petType,
-        ingredients,
-        description: productDesc,
-      };
-
-      const formData = new FormData();
-      formData.append('image', productImage);
-      formData.append('image_name', productImageName);
-      formData.append('product_info', JSON.stringify(body));
-
-      await apiCalls.post('/products/create', formData);
-
-      history.push('/');
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
+    control,
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   return (
     <form className={classes.form} onSubmit={handleSubmit(onSubmitForm)}>
@@ -154,21 +175,21 @@ const ProductCreate = () => {
           )}
 
           <TextField
+            inputRef={register}
             name="productName"
-            {...register('productName', { required: 'it is required field' })}
             variant="standard"
             label="Product Name"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
+            // value={productName}
+            // onChange={(e) => setProductName(e.target.value)}
+            helperText={
+              errors.productName &&
+              // <Typography className={classes.errorMsg}>
+              errors.productName.message
+              // </Typography>
+            }
           />
-
-          {errors.productName && (
-            <Typography className={classes.errorMsg}>
-              {errors.productName.message}
-            </Typography>
-          )}
           <FormControl>
-            <InputLabel id="pet_type-label">Pet Type</InputLabel>
+            {/* <InputLabel id="pet_type-label">Pet Type</InputLabel>
             <Select
               labelId="pet_type-label"
               label="Pet Type"
@@ -179,10 +200,31 @@ const ProductCreate = () => {
             >
               <MenuItem value={`1`}>Dog</MenuItem>
               <MenuItem value={`2`}>Cat</MenuItem>
-            </Select>
+            </Select> */}
+            <Controller
+              control={control}
+              name="petType"
+              as={
+                <>
+                  <InputLabel id="pet_type-label">Pet Type</InputLabel>
+                  <Select
+                    label="Pet Type"
+                    labelId="pet_type-label"
+                    onChange={(e) => setValue(e.target.value)}
+                  >
+                    {petTypeMenu.map((type) => (
+                      <MenuItem value={type.value} key={type.value}>
+                        {type.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </>
+              }
+              defaultValue=""
+            />
           </FormControl>
           <FormControl>
-            <InputLabel id="product_type-label">Product Type</InputLabel>
+            {/* <InputLabel id="product_type-label">Product Type</InputLabel>
             <Select
               labelId="product_type-label"
               label="Product Type"
@@ -196,49 +238,69 @@ const ProductCreate = () => {
               <MenuItem value={`3`}>Freeze-Dried</MenuItem>
               <MenuItem value={`4`}>Raw</MenuItem>
               <MenuItem value={`5`}>Treat</MenuItem>
-            </Select>
+            </Select> */}
+            <Controller
+              control={control}
+              name="productType"
+              as={
+                <>
+                  <InputLabel id="product_type-label">Product Type</InputLabel>
+                  <Select
+                    label="Product Type"
+                    labelId="product_type-label"
+                    value={productType}
+                    onChange={(e) => setProductType(e.target.value)}
+                  >
+                    {productTypeMenu.map((type) => (
+                      <MenuItem value={type.value} key={type.value}>
+                        {type.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </>
+              }
+              defaultValue=""
+            />
           </FormControl>
-
           <TextField
-            // name="productDesc"
-            {...register('productDesc', {
-              required: 'Product description is required',
-            })}
+            name="productDesc"
+            inputRef={register}
             multiline
             variant="outlined"
             rows={10}
             label="Product Description"
-            value={productDesc}
-            onChange={(e) => {
-              setProductDesc(e.target.value);
-            }}
+            // value={productDesc}
+            // onChange={(e) => {
+            //   setProductDesc(e.target.value);
+            // }}
+            helperText={
+              errors.productDesc && (
+                <Typography className={classes.errorMsg}>
+                  {errors.productDesc.message}
+                </Typography>
+              )
+            }
           />
-          {errors.productDesc && (
-            <Typography className={classes.errorMsg}>
-              {errors.productDesc.message}
-            </Typography>
-          )}
 
           <TextField
-            // name="productIngredients"
-            {...register('productIngredients', {
-              required: 'Plese provide ingredients',
-            })}
+            name="productIngredients"
+            inputRef={register}
             multiline
             variant="outlined"
             rows={10}
             label="Product Ingredients"
-            onChange={(e) => {
-              parseIngredients(e.target.value);
-            }}
+            // onChange={(e) => {
+            //   parseIngredients(e.target.value);
+            // }}
+            helperText={
+              errors.productIngredients && (
+                <Typography className={classes.errorMsg}>
+                  {errors.productIngredients.message}
+                </Typography>
+              )
+            }
           />
-          {parsingError}
-          {errors.productIngredients && (
-            <Typography className={classes.errorMsg}>
-              {errors.productIngredients.message}
-            </Typography>
-          )}
-
+          {parsingError && parsingError}
           <FormControl>
             <Button
               variant="contained"
