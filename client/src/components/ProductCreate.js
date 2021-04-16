@@ -16,6 +16,7 @@ import {
   makeStyles,
   Button,
   CardMedia,
+  FormHelperText,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
@@ -27,10 +28,11 @@ const schema = yup.object().shape({
     .string()
     .required('Product Ingredients list is required'),
   // productType: yup.object().shape({
-  //   value: yup.string().required(),
-  //   text: yup.string().required(),
+  //   value: yup.string().required('required'),
+  //   text: yup.string().required('required'),
   // }),
-  // petType: yup.number().required('please select a pet type'),
+  petType: yup.string().required('Please select a pet type'),
+  productType: yup.string().required('Please select a product type'),
 });
 const petTypeMenu = [
   { value: `1`, text: 'Dog' },
@@ -57,6 +59,8 @@ const useStyles = makeStyles((theme) => ({
   },
   errorMsg: {
     color: 'red',
+    margin: '0',
+    // padding: '0',
   },
 }));
 
@@ -143,6 +147,7 @@ const ProductCreate = () => {
     formState: { errors },
     control,
     setValue,
+    getValues,
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -182,10 +187,11 @@ const ProductCreate = () => {
             // value={productName}
             // onChange={(e) => setProductName(e.target.value)}
             helperText={
-              errors.productName &&
-              // <Typography className={classes.errorMsg}>
-              errors.productName.message
-              // </Typography>
+              errors.productName && (
+                <FormHelperText className={classes.errorMsg}>
+                  {errors.productName.message}
+                </FormHelperText>
+              )
             }
           />
           <FormControl>
@@ -210,7 +216,8 @@ const ProductCreate = () => {
                   <Select
                     label="Pet Type"
                     labelId="pet_type-label"
-                    onChange={(e) => setValue(e.target.value)}
+                    // value={getValues('petType')}
+                    onChange={(e) => setValue('petType', e.target.value)}
                   >
                     {petTypeMenu.map((type) => (
                       <MenuItem value={type.value} key={type.value}>
@@ -222,23 +229,13 @@ const ProductCreate = () => {
               }
               defaultValue=""
             />
+            {errors.petType && (
+              <FormHelperText className={classes.errorMsg}>
+                {errors.petType.message}
+              </FormHelperText>
+            )}
           </FormControl>
           <FormControl>
-            {/* <InputLabel id="product_type-label">Product Type</InputLabel>
-            <Select
-              labelId="product_type-label"
-              label="Product Type"
-              value={productType}
-              onChange={(e) => {
-                setProductType(e.target.value);
-              }}
-            >
-              <MenuItem value={`1`}>Dry</MenuItem>
-              <MenuItem value={`2`}>Canned</MenuItem>
-              <MenuItem value={`3`}>Freeze-Dried</MenuItem>
-              <MenuItem value={`4`}>Raw</MenuItem>
-              <MenuItem value={`5`}>Treat</MenuItem>
-            </Select> */}
             <Controller
               control={control}
               name="productType"
@@ -248,8 +245,7 @@ const ProductCreate = () => {
                   <Select
                     label="Product Type"
                     labelId="product_type-label"
-                    value={productType}
-                    onChange={(e) => setProductType(e.target.value)}
+                    onChange={(e) => setValue('productType', e.target.value)}
                   >
                     {productTypeMenu.map((type) => (
                       <MenuItem value={type.value} key={type.value}>
@@ -261,6 +257,11 @@ const ProductCreate = () => {
               }
               defaultValue=""
             />
+            {errors.productType && (
+              <FormHelperText className={classes.errorMsg}>
+                {errors.productType.message}
+              </FormHelperText>
+            )}
           </FormControl>
           <TextField
             name="productDesc"
@@ -275,9 +276,9 @@ const ProductCreate = () => {
             // }}
             helperText={
               errors.productDesc && (
-                <Typography className={classes.errorMsg}>
+                <FormHelperText className={classes.errorMsg}>
                   {errors.productDesc.message}
-                </Typography>
+                </FormHelperText>
               )
             }
           />
@@ -294,9 +295,9 @@ const ProductCreate = () => {
             // }}
             helperText={
               errors.productIngredients && (
-                <Typography className={classes.errorMsg}>
+                <FormHelperText className={classes.errorMsg}>
                   {errors.productIngredients.message}
-                </Typography>
+                </FormHelperText>
               )
             }
           />
