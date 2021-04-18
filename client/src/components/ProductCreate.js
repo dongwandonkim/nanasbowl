@@ -118,29 +118,30 @@ const ProductCreate = () => {
   const onSubmitForm = async (data) => {
     // e.preventDefault();
     // console.log(data);
-    // parseIngredients(data.productIngredients);
-    // console.log(ingredients);
-    console.log(data);
-    // try {
-    //   const body = {
-    //     name: data.productName,
-    //     product_type: data.productType,
-    //     pet_type: data.petType,
-    //     ingredients,
-    //     description: data.productDesc,
-    //   };
+    parseIngredients(data.productIngredients);
 
-    //   const formData = new FormData();
-    //   formData.append('image', productImage);
-    //   formData.append('image_name', productImageName);
-    //   formData.append('product_info', JSON.stringify(body));
+    data.productIngredients = ingredients;
+    console.log(ingredients);
+    try {
+      const body = {
+        name: data.productName,
+        product_type: data.productType,
+        pet_type: data.petType,
+        ingredients,
+        description: data.productDesc,
+      };
 
-    //   await apiCalls.post('/products/create', formData);
+      const formData = new FormData();
+      formData.append('image', productImage);
+      formData.append('image_name', productImageName);
+      formData.append('product_info', JSON.stringify(body));
 
-    //   history.push('/');
-    // } catch (error) {
-    //   console.error(error.message);
-    // }
+      await apiCalls.post('/products/create', formData);
+
+      history.push('/');
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   const {
@@ -276,9 +277,7 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Ingredients"
-            onChange={(e) =>
-              setValue('productIngredients', parseIngredients(e.target.value))
-            }
+            onChange={(e) => setValue('productIngredients', e.target.value)}
             helperText={
               errors.productIngredients && (
                 <FormHelperText className={classes.errorMsg}>
