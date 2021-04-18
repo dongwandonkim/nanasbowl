@@ -115,17 +115,19 @@ const ProductCreate = () => {
     setIngredients(parsedIngredients);
   };
 
-  const onSubmitForm = (data) => {
+  const onSubmitForm = async (data) => {
     // e.preventDefault();
+    // console.log(data);
+    // parseIngredients(data.productIngredients);
+    // console.log(ingredients);
     console.log(data);
-
     // try {
     //   const body = {
-    //     name: productName,
-    //     product_type: productType,
-    //     pet_type: petType,
+    //     name: data.productName,
+    //     product_type: data.productType,
+    //     pet_type: data.petType,
     //     ingredients,
-    //     description: productDesc,
+    //     description: data.productDesc,
     //   };
 
     //   const formData = new FormData();
@@ -195,18 +197,6 @@ const ProductCreate = () => {
             }
           />
           <FormControl>
-            {/* <InputLabel id="pet_type-label">Pet Type</InputLabel>
-            <Select
-              labelId="pet_type-label"
-              label="Pet Type"
-              value={petType}
-              onChange={(e) => {
-                setPetType(e.target.value);
-              }}
-            >
-              <MenuItem value={`1`}>Dog</MenuItem>
-              <MenuItem value={`2`}>Cat</MenuItem>
-            </Select> */}
             <Controller
               control={control}
               name="petType"
@@ -270,10 +260,6 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Description"
-            // value={productDesc}
-            // onChange={(e) => {
-            //   setProductDesc(e.target.value);
-            // }}
             helperText={
               errors.productDesc && (
                 <FormHelperText className={classes.errorMsg}>
@@ -290,9 +276,9 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Ingredients"
-            // onChange={(e) => {
-            //   parseIngredients(e.target.value);
-            // }}
+            onChange={(e) =>
+              setValue('productIngredients', parseIngredients(e.target.value))
+            }
             helperText={
               errors.productIngredients && (
                 <FormHelperText className={classes.errorMsg}>
