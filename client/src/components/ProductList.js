@@ -21,7 +21,18 @@ const useStyles = makeStyles((theme) => ({
 const ProductList = () => {
   const classes = useStyles();
 
-  const { productList, keyword, include } = useContext(ProductsContext);
+  const { productList, setProductList, keyword, include } = useContext(
+    ProductsContext
+  );
+
+  // useEffect(() => {
+  //   const getAllProducts = async () => {
+  //     const res = await apiCalls.get(`/search/?keyword=&include=${include}`);
+  //     console.log(res.data);
+  //     setProductList(res.data);
+  //   };
+  //   getAllProducts();
+  // }, [include, setProductList]);
 
   const RenderText = () => {
     if (keyword && include) {
@@ -42,10 +53,10 @@ const ProductList = () => {
       return null;
     }
   };
-  useEffect(() => {
-    const res = apiCalls.get('/search');
-    console.log(res);
-  }, []);
+  // useEffect(() => {
+  //   const res = apiCalls.get('/search');
+  //   console.log(res);
+  // }, []);
 
   return (
     <>

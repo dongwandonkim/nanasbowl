@@ -12,7 +12,6 @@ import {
   MenuItem,
   Select,
   InputLabel,
-  Typography,
   makeStyles,
   Button,
   CardMedia,
@@ -27,10 +26,7 @@ const schema = yup.object().shape({
   productIngredients: yup
     .string()
     .required('Product Ingredients list is required'),
-  // productType: yup.object().shape({
-  //   value: yup.string().required('required'),
-  //   text: yup.string().required('required'),
-  // }),
+
   petType: yup.string().required('Please select a pet type'),
   productType: yup.string().required('Please select a product type'),
 });
@@ -68,10 +64,6 @@ const ProductCreate = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  // const [productName, setProductName] = useState('');
-  const [productType, setProductType] = useState(1);
-  const [petType, setPetType] = useState(1);
-  const [productDesc, setProductDesc] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [parsingError, setParsingError] = useState('');
 
@@ -116,11 +108,11 @@ const ProductCreate = () => {
   };
 
   const onSubmitForm = async (data) => {
-    // e.preventDefault();
+    // e.preventDefault()
     // console.log(data);
     parseIngredients(data.productIngredients);
 
-    data.productIngredients = ingredients;
+    // data.productIngredients = ingredients;
     console.log(ingredients);
     try {
       const body = {
@@ -138,8 +130,8 @@ const ProductCreate = () => {
 
       await apiCalls.post('/products/create', formData);
 
-      // history.push('/');
-      window.location.reload();
+      history.push('/');
+      // window.location.reload();
     } catch (error) {
       console.error(error.message);
     }

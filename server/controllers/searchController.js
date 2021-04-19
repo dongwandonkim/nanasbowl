@@ -5,8 +5,8 @@ const search_product = async (req, res) => {
   try {
     let { keyword, include } = req.query;
 
-    if (keyword.length <= 0 || keyword.length === undefined) include = 'true'; //if keyword is empty query all product list
-
+    if (keyword.length <= 0 || keyword.length == undefined) include = 'true'; //if keyword is empty query all product list
+    console.log(keyword);
     let response;
     if (include === 'true') {
       response = await pool.query(

@@ -133,7 +133,7 @@ const Search = () => {
               <Grid item xs={7} sm={5} md={5} lg={5} className={classes.grow}>
                 <InputBase
                   className={classes.searchInput}
-                  placeholder="Search by Ingredient"
+                  placeholder="e.g. 'chicken'"
                   startAdornment={<SearchIcon fontSize="small" />}
                   value={searchInput}
                   inputRef={formRef}
