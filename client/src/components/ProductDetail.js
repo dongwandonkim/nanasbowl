@@ -74,7 +74,6 @@ const ProductDetail = () => {
   useEffect(() => {
     const getProductDetail = async () => {
       try {
-        // const productDetail = await fetch(baseURL + id);
         const res = await apiCalls.get('/products/' + id);
         setProductInfo(res.data);
       } catch (error) {

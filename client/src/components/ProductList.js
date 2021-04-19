@@ -1,7 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
+import apiCalls from '../apis/apiCalls';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +42,10 @@ const ProductList = () => {
       return null;
     }
   };
+  useEffect(() => {
+    const res = apiCalls.get('/search');
+    console.log(res);
+  }, []);
 
   return (
     <>

@@ -138,7 +138,8 @@ const ProductCreate = () => {
 
       await apiCalls.post('/products/create', formData);
 
-      history.push('/');
+      // history.push('/');
+      window.location.reload();
     } catch (error) {
       console.error(error.message);
     }
