@@ -20,26 +20,16 @@ import {
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
 
-const schema = yup.object().shape({
-  productName: yup.string().required('Product name is required.'),
-  productDesc: yup.string().required('Product Description is required'),
-  productIngredients: yup
-    .string()
-    .required('Product Ingredients list is required'),
-
-  petType: yup.string().required('Please select a pet type'),
-  productType: yup.string().required('Please select a product type'),
-});
 const petTypeMenu = [
-  { value: `1`, text: 'Dog' },
-  { value: `2`, text: 'Cat' },
+  { value: '1', text: 'Dog' },
+  { value: '2', text: 'Cat' },
 ];
 const productTypeMenu = [
-  { value: `1`, text: 'Dry' },
-  { value: `2`, text: 'Canned' },
-  { value: `3`, text: 'Freeze-Dried' },
-  { value: `4`, text: 'Raw' },
-  { value: `5`, text: 'Treat' },
+  { value: '1', text: 'Dry' },
+  { value: '2', text: 'Canned' },
+  { value: '3', text: 'Freeze-Dried' },
+  { value: '4', text: 'Raw' },
+  { value: '5', text: 'Treat' },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -67,6 +57,10 @@ const ProductCreate = () => {
   const [ingredients, setIngredients] = useState([]);
   const [parsingError, setParsingError] = useState('');
 
+  const [productName, setProductName] = useState('');
+  const [productDesc, setProductDesc] = useState('');
+  const [productType, setProductType] = useState('1');
+  const [petType, setPetType] = useState('1');
   const [productImage, setProductImage] = useState(null);
   const [productImageName, setProductImageName] = useState('');
   const [previewImage, setPreviewImage] = useState(null);
@@ -107,20 +101,17 @@ const ProductCreate = () => {
     setIngredients(parsedIngredients);
   };
 
-  const onSubmitForm = async (data) => {
-    // e.preventDefault()
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
     // console.log(data);
-    parseIngredients(data.productIngredients);
 
-    // data.productIngredients = ingredients;
-    console.log(ingredients);
     try {
       const body = {
-        name: data.productName,
-        product_type: data.productType,
-        pet_type: data.petType,
+        name: productName,
+        product_type: productType,
+        pet_type: petType,
         ingredients,
-        description: data.productDesc,
+        description: productDesc,
       };
 
       const formData = new FormData();
@@ -131,25 +122,13 @@ const ProductCreate = () => {
       await apiCalls.post('/products/create', formData);
 
       history.push('/');
-      // window.location.reload();
     } catch (error) {
       console.error(error.message);
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-    setValue,
-    getValues,
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
   return (
-    <form className={classes.form} onSubmit={handleSubmit(onSubmitForm)}>
+    <form className={classes.form} onSubmit={onSubmitForm}>
       <Grid container justify="center">
         <Grid item xs={6}>
           <Button
@@ -176,108 +155,61 @@ const ProductCreate = () => {
           )}
 
           <TextField
-            inputRef={register}
             name="productName"
             variant="standard"
             label="Product Name"
-            // value={productName}
-            // onChange={(e) => setProductName(e.target.value)}
-            helperText={
-              errors.productName && (
-                <FormHelperText className={classes.errorMsg}>
-                  {errors.productName.message}
-                </FormHelperText>
-              )
-            }
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            helperText="required"
           />
           <FormControl>
-            <Controller
-              control={control}
-              name="petType"
-              as={
-                <>
-                  <InputLabel id="pet_type-label">Pet Type</InputLabel>
-                  <Select
-                    label="Pet Type"
-                    labelId="pet_type-label"
-                    // value={getValues('petType')}
-                    onChange={(e) => setValue('petType', e.target.value)}
-                  >
-                    {petTypeMenu.map((type) => (
-                      <MenuItem value={type.value} key={type.value}>
-                        {type.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </>
-              }
-              defaultValue=""
-            />
-            {errors.petType && (
-              <FormHelperText className={classes.errorMsg}>
-                {errors.petType.message}
-              </FormHelperText>
-            )}
+            <InputLabel id="pet_type-label">Pet Type</InputLabel>
+            <Select
+              label="Pet Type"
+              labelId="pet_type-label"
+              defaultValue={petType}
+              onChange={(e) => setPetType(e.target.value)}
+            >
+              {petTypeMenu.map((type) => (
+                <MenuItem value={type.value} key={type.value}>
+                  {type.text}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
           <FormControl>
-            <Controller
-              control={control}
-              name="productType"
-              as={
-                <>
-                  <InputLabel id="product_type-label">Product Type</InputLabel>
-                  <Select
-                    label="Product Type"
-                    labelId="product_type-label"
-                    onChange={(e) => setValue('productType', e.target.value)}
-                  >
-                    {productTypeMenu.map((type) => (
-                      <MenuItem value={type.value} key={type.value}>
-                        {type.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </>
-              }
-              defaultValue=""
-            />
-            {errors.productType && (
-              <FormHelperText className={classes.errorMsg}>
-                {errors.productType.message}
-              </FormHelperText>
-            )}
+            <InputLabel id="product_type-label">Product Type</InputLabel>
+            <Select
+              label="Product Type"
+              labelId="product_type-label"
+              defaultValue={productType}
+              onChange={(e) => setProductType(e.target.value)}
+            >
+              {productTypeMenu.map((type) => (
+                <MenuItem value={type.value} key={type.value}>
+                  {type.text}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
           <TextField
             name="productDesc"
-            inputRef={register}
             multiline
             variant="outlined"
             rows={10}
             label="Product Description"
-            helperText={
-              errors.productDesc && (
-                <FormHelperText className={classes.errorMsg}>
-                  {errors.productDesc.message}
-                </FormHelperText>
-              )
-            }
+            onChange={(e) => setProductDesc(e.target.value)}
+            helperText="required"
           />
 
           <TextField
             name="productIngredients"
-            inputRef={register}
             multiline
             variant="outlined"
             rows={10}
             label="Product Ingredients"
-            onChange={(e) => setValue('productIngredients', e.target.value)}
-            helperText={
-              errors.productIngredients && (
-                <FormHelperText className={classes.errorMsg}>
-                  {errors.productIngredients.message}
-                </FormHelperText>
-              )
-            }
+            onChange={(e) => parseIngredients(e.target.value)}
+            helperText="required"
           />
           {parsingError && parsingError}
           <FormControl>

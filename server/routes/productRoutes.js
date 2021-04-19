@@ -13,7 +13,7 @@ router.post(
 );
 
 //all products
-// router.get('/', productController.product_index);
+router.get('/', productController.product_index);
 
 //product detail
 router.get('/:id', productController.product_details);

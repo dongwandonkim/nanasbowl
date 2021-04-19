@@ -9,26 +9,37 @@ const { uploadImage, getSignedUrl } = require('../s3');
 
 //product_index, product_details, product_create_post, product_delete, product_update
 
-// const product_index = async (req, res) => {
-//   try {
-//     const allProducts = await pool.query(
-//       `SELECT product.id AS product_id,
-//               product.name AS product_name,
-//               product.created_at AS product_created,
-//               product.description AS product_desc,
-//               product_type.type AS product_type,
-//               product.img_url AS product_img_url,
-//               pet_type.type AS pet_type
-//                   FROM product, product_type, pet_type
-//                     WHERE product.product_type_id = product_type.id
-//                     AND product.pet_type_id = pet_type.id LIMIT 12`
-//     );
+const product_index = async (req, res) => {
+  try {
+    const response = await pool.query(
+      `SELECT 
+              product.id AS product_id,
+              product.name AS product_name,
+              product.created_at AS product_created,
+              product.description AS product_desc,
+              product_type.type AS product_type,
+              product.img_url AS product_img_url,
+              pet_type.type AS pet_type
+                  FROM product, product_type, pet_type
+                    WHERE product.product_type_id = product_type.id
+                    AND product.pet_type_id = pet_type.id`
+    );
 
-//     res.json(allProducts.rows);
-//   } catch (error) {
-//     console.error(error.message);
-//   }
-// };
+    const result = response.rows.map((data) => {
+      if (data.product_img_url == null) return data;
+      return getSignedUrl(data.product_img_url).then((res) => {
+        data.signedUrl = res;
+        return data;
+      });
+    });
+
+    Promise.all(result).then((result) => {
+      res.json(result);
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
 const product_details = async (req, res) => {
   try {
@@ -47,6 +58,7 @@ const product_details = async (req, res) => {
                     WHERE p.id = $1 GROUP BY p.id`,
       [id]
     );
+    console.log(productDetail.rows);
 
     if (productDetail.rows[0].product_img_url) {
       const getImageFromS3 = await getSignedUrl(
@@ -66,7 +78,7 @@ const product_details = async (req, res) => {
 const product_create_post = async (req, res) => {
   try {
     const parseData = JSON.parse(req.body.product_info);
-
+    // console.log(parseData);
     const {
       name,
       product_type,
@@ -82,14 +94,14 @@ const product_create_post = async (req, res) => {
     const id = uuidv4();
     await uploadImage(`upload/${id}`, fileStream, req.file.mimetype);
 
-    //delete upload/imgs after uploading to s3 is complete
-    await unlinkFile(file.path);
-
     //INSERT INTO product
     await pool.query(
       'INSERT INTO product (name, product_type_id, pet_type_id, description, img_url) VALUES ($1, $2, $3, $4, $5)',
       [name, product_type, pet_type, description, `upload/${id}`]
     );
+
+    //delete upload/imgs after uploading to s3 is complete
+    await unlinkFile(file.path);
 
     //get saved product_id
     const product_id = await pool.query(
@@ -117,7 +129,6 @@ const product_create_post = async (req, res) => {
         [ids.rows[0].id, product_id.rows[0].id]
       );
     });
-
     res.status(201).json('post success');
   } catch (error) {
     console.error(error.message);
@@ -187,6 +198,7 @@ const product_update = async (req, res) => {
 };
 
 module.exports = {
+  product_index,
   product_details,
   product_create_post,
   product_delete,

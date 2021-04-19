@@ -76,25 +76,27 @@ const Search = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     setKeyword(searchInput.toLowerCase());
-    history.push('/');
+    history.push('/products');
     // getSearchedProduct();
     formRef.current.select();
   };
 
   useEffect(() => {
-    const getSearchedProduct = async () => {
-      try {
-        const res = await apiCalls.get(
-          `/search/?keyword=${searchInput}&include=${include}`
-        );
-        setProductList(res.data);
-      } catch (error) {
-        console.error(error.message);
-      }
+    if (searchInput.length > 0) {
+      const getSearchedProduct = async () => {
+        try {
+          const res = await apiCalls.get(
+            `/search/?keyword=${searchInput}&include=${include}`
+          );
+          setProductList(res.data);
+        } catch (error) {
+          console.error(error.message);
+        }
 
-      setKeyword(searchInput);
-    };
-    getSearchedProduct();
+        setKeyword(searchInput);
+      };
+      getSearchedProduct();
+    }
   }, [include, searchInput, setKeyword, setProductList]);
 
   return (

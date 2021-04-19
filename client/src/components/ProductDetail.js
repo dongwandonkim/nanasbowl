@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import apiCalls from '../apis/apiCalls';
@@ -59,11 +59,13 @@ const ProductDetail = () => {
   const classes = useStyles();
   const history = useHistory();
   let { id } = useParams();
-  const { productInfo, setProductInfo, keyword } = useContext(ProductsContext);
+
+  const { keyword } = useContext(ProductsContext);
+  const [productDetail, setProductDetail] = useState([]);
 
   const deleteProduct = async () => {
     try {
-      await apiCalls.delete('products/' + id);
+      await apiCalls.delete('/products/' + id);
 
       history.push('/');
     } catch (error) {
@@ -75,24 +77,26 @@ const ProductDetail = () => {
     const getProductDetail = async () => {
       try {
         const res = await apiCalls.get('/products/' + id);
-        setProductInfo(res.data);
+        console.log(res.data);
+        setProductDetail(res.data);
       } catch (error) {
         console.error(error.message);
       }
     };
     getProductDetail();
-  }, [setProductInfo, id, keyword]);
+  }, []);
 
+  // console.log(productDetail);
   return (
     <Grid container justify="center">
       <Grid item xs={12} md={6}>
         <div className={classes.imgBox}>
-          {productInfo[1] ? (
-            productInfo[1] ? (
+          {productDetail[1] ? (
+            productDetail[1] ? (
               <CardMedia
                 component="img"
                 className={classes.image}
-                image={productInfo[1]}
+                image={productDetail[1]}
               ></CardMedia>
             ) : (
               <CircularProgress />
@@ -105,12 +109,12 @@ const ProductDetail = () => {
         <Grid container justify="center">
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.productName}>
-              {productInfo[0] && productInfo[0].product_name}
+              {productDetail[0] && productDetail[0].product_name}
             </Typography>
           </Grid>
           <Grid item xs={12} className={classes.typoSpacing}>
             <Typography variant="body1">
-              {productInfo[0] && productInfo[0].product_description}
+              {productDetail[0] && productDetail[0].product_description}
             </Typography>
           </Grid>
           <Grid item xs={12} className={classes.typoSpacing}>
@@ -119,8 +123,8 @@ const ProductDetail = () => {
             </Typography>
           </Grid>
           <Grid container spacing={1}>
-            {productInfo[0] &&
-              productInfo[0].ingredient_names.map((ingredient, idx) => {
+            {productDetail[0] &&
+              productDetail[0].ingredient_names.map((ingredient, idx) => {
                 return (
                   <>
                     {ingredient.includes(keyword) && keyword ? (
@@ -141,7 +145,7 @@ const ProductDetail = () => {
                     {/* put divider until idx gets same to the ingredient_names.length */}
 
                     {idx ===
-                    productInfo[0].ingredient_names.length - 1 ? null : (
+                    productDetail[0].ingredient_names.length - 1 ? null : (
                       <Grid item key={ingredient}>
                         <Divider
                           className={classes.divider}

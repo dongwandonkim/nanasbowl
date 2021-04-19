@@ -1,8 +1,7 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
-import apiCalls from '../apis/apiCalls';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,18 +20,14 @@ const useStyles = makeStyles((theme) => ({
 const ProductList = () => {
   const classes = useStyles();
 
-  const { productList, setProductList, keyword, include } = useContext(
-    ProductsContext
-  );
+  const { productList, keyword, include } = useContext(ProductsContext);
+
+  const [list, setList] = useState([]);
 
   // useEffect(() => {
-  //   const getAllProducts = async () => {
-  //     const res = await apiCalls.get(`/search/?keyword=&include=${include}`);
-  //     console.log(res.data);
-  //     setProductList(res.data);
-  //   };
-  //   getAllProducts();
-  // }, [include, setProductList]);
+  //   setList(productList);
+  //   console.log(list);
+  // }, [productList, list]);
 
   const RenderText = () => {
     if (keyword && include) {
@@ -53,10 +48,6 @@ const ProductList = () => {
       return null;
     }
   };
-  // useEffect(() => {
-  //   const res = apiCalls.get('/search');
-  //   console.log(res);
-  // }, []);
 
   return (
     <>

@@ -25,8 +25,8 @@ function App() {
       <Search />
       <Container className={styles.appMain}>
         <Switch>
-          <Route exact path="/" component={ProductList} />
-          {/* <Route exact path="/products" component={ProductList} /> */}
+          <Route exact path="/" component={Main} />
+          <Route exact path="/products" component={ProductList} />
           <Route exact path="/products/create" component={ProductCreate} />
           <Route exact path="/products/:id" component={ProductDetail} />
           <Route exact path="/products/:id/edit" component={ProductEdit} />
