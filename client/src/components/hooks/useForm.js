@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const useForm = () => {
+const useForm = (validate) => {
   const [values, setValues] = useState({
     productName: '',
     productDesc: '',
@@ -18,7 +18,9 @@ const useForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(values);
+    setErrors(validate(values));
   };
-  return { handleChange, values, handleSubmit };
+
+  return { handleChange, values, handleSubmit, errors };
 };
 export default useForm;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import apiCalls from '../apis/apiCalls';
 import useForm from './hooks/useForm';
+import validate from './FormValidation';
 
 import {
   Grid,
@@ -13,6 +14,7 @@ import {
   makeStyles,
   Button,
   CardMedia,
+  FormHelperText,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
@@ -51,7 +53,7 @@ const ProductCreate = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const { handleChange, handleSubmit, values } = useForm();
+  const { handleChange, handleSubmit, values, errors } = useForm(validate);
 
   const [ingredients, setIngredients] = useState([]);
   const [parsingError, setParsingError] = useState('');
@@ -161,7 +163,7 @@ const ProductCreate = () => {
             // onChange={(e) => setProductName(e.target.value)}
             value={values.productName}
             onChange={handleChange}
-            helperText="required"
+            helperText={errors.productName && errors.productName}
           />
           <FormControl>
             <InputLabel id="pet_type-label">Pet Type</InputLabel>
@@ -182,6 +184,9 @@ const ProductCreate = () => {
                 </MenuItem>
               ))}
             </Select>
+            {errors.petType && (
+              <FormHelperText>{errors.petType}</FormHelperText>
+            )}
           </FormControl>
           <FormControl>
             <InputLabel id="product_type-label">Product Type</InputLabel>
@@ -202,6 +207,9 @@ const ProductCreate = () => {
                 </MenuItem>
               ))}
             </Select>
+            {errors.productType && (
+              <FormHelperText>{errors.productType}</FormHelperText>
+            )}
           </FormControl>
           <TextField
             name="productDesc"
@@ -214,7 +222,7 @@ const ProductCreate = () => {
 
             value={values.productDesc}
             onChange={handleChange}
-            helperText="required"
+            helperText={errors.productDesc && errors.productDesc}
           />
 
           <TextField
@@ -226,7 +234,7 @@ const ProductCreate = () => {
             // onChange={(e) => parseIngredients(e.target.value)}
             value={values.productIngredients}
             onChange={handleChange}
-            helperText="required"
+            helperText={errors.productIngredients && errors.productIngredients}
           />
           {parsingError && parsingError}
           <FormControl>
