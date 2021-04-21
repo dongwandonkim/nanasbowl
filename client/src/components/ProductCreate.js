@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import apiCalls from '../apis/apiCalls';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import useForm from './hooks/useForm';
 
 import {
   Grid,
@@ -15,7 +13,6 @@ import {
   makeStyles,
   Button,
   CardMedia,
-  FormHelperText,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import SaveIcon from '@material-ui/icons/Save';
@@ -53,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 const ProductCreate = () => {
   const history = useHistory();
   const classes = useStyles();
+
+  const { handleChange, handleSubmit, values } = useForm();
 
   const [ingredients, setIngredients] = useState([]);
   const [parsingError, setParsingError] = useState('');
@@ -128,7 +127,7 @@ const ProductCreate = () => {
   };
 
   return (
-    <form className={classes.form} onSubmit={onSubmitForm}>
+    <form className={classes.form} onSubmit={handleSubmit}>
       <Grid container justify="center">
         <Grid item xs={6}>
           <Button
@@ -158,17 +157,24 @@ const ProductCreate = () => {
             name="productName"
             variant="standard"
             label="Product Name"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
+            // value={productName}
+            // onChange={(e) => setProductName(e.target.value)}
+            value={values.productName}
+            onChange={handleChange}
             helperText="required"
           />
           <FormControl>
             <InputLabel id="pet_type-label">Pet Type</InputLabel>
             <Select
+              name="petType"
               label="Pet Type"
               labelId="pet_type-label"
-              defaultValue={petType}
-              onChange={(e) => setPetType(e.target.value)}
+              // defaultValue={petType}
+              // value={petType}
+              // onChange={(e) => setPetType(e.target.value)}
+              defaultValue={values.petType}
+              value={values.petType}
+              onChange={handleChange}
             >
               {petTypeMenu.map((type) => (
                 <MenuItem value={type.value} key={type.value}>
@@ -180,10 +186,15 @@ const ProductCreate = () => {
           <FormControl>
             <InputLabel id="product_type-label">Product Type</InputLabel>
             <Select
+              name="productType"
               label="Product Type"
               labelId="product_type-label"
-              defaultValue={productType}
-              onChange={(e) => setProductType(e.target.value)}
+              // defaultValue={productType}
+              // value={productType}
+              // onChange={(e) => setProductType(e.target.value)}
+              defaultValue={values.productType}
+              value={values.productType}
+              onChange={handleChange}
             >
               {productTypeMenu.map((type) => (
                 <MenuItem value={type.value} key={type.value}>
@@ -198,7 +209,11 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Description"
-            onChange={(e) => setProductDesc(e.target.value)}
+            // value={productDesc}
+            // onChange={(e) => setProductDesc(e.target.value)}
+
+            value={values.productDesc}
+            onChange={handleChange}
             helperText="required"
           />
 
@@ -208,7 +223,9 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Ingredients"
-            onChange={(e) => parseIngredients(e.target.value)}
+            // onChange={(e) => parseIngredients(e.target.value)}
+            value={values.productIngredients}
+            onChange={handleChange}
             helperText="required"
           />
           {parsingError && parsingError}
