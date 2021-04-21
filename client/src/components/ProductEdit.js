@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
+import useForm from './hooks/useForm';
+import validate from './FormValidation';
 import apiCalls from '../apis/apiCalls';
 import {
   Grid,
@@ -93,7 +95,7 @@ const ProductEdit = () => {
       formData.append('product_info', JSON.stringify(body));
 
       await apiCalls.put('/products/' + id + '/edit', formData);
-      history.push('/products');
+      history.push('/');
     } catch (error) {
       console.error(error.message);
     }
