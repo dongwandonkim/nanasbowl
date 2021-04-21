@@ -1,4 +1,4 @@
-# nanasbowl[Website](https://www.nanasbowl.com)
+# Nanasbowl <https://www.nanasbowl.com>
 easy way to find a pet food
 
 TECH STACK
