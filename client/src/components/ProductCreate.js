@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import apiCalls from '../apis/apiCalls';
 import useForm from './hooks/useForm';
@@ -41,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   preview: {
     width: '200px',
     height: '200px',
+    margin: theme.spacing(2, 0),
   },
   errorMsg: {
     color: 'red',
@@ -53,71 +53,27 @@ const ProductCreate = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const { handleChange, handleSubmit, values, errors } = useForm(validate);
+  const {
+    handleChange,
+    handleSubmit,
+    handleImageChange,
+    parsedIngredients,
+    values,
+    errors,
+  } = useForm(onSubmit, validate);
 
-  const [ingredients, setIngredients] = useState([]);
-  const [parsingError, setParsingError] = useState('');
-
-  const [productName, setProductName] = useState('');
-  const [productDesc, setProductDesc] = useState('');
-  const [productType, setProductType] = useState('1');
-  const [petType, setPetType] = useState('1');
-  const [productImage, setProductImage] = useState(null);
-  const [productImageName, setProductImageName] = useState('');
-  const [previewImage, setPreviewImage] = useState(null);
-
-  const imageSelectHandler = (e) => {
-    setProductImage(e.target.files[0]);
-    setProductImageName(e.target.value);
-    setPreviewImage(URL.createObjectURL(e.target.files[0]));
-  };
-
-  const parseIngredients = (text) => {
-    let parsedIngredients = [];
-
-    if (!text.trim().length) {
-      parsedIngredients = [];
-      setParsingError('');
-      // return;
-    }
-
-    const list = text.replace(/\n|\r|\*/g, '').split(/\,\s*(?![^\(]*\))/);
-
-    parsedIngredients = [];
-    setParsingError('');
-    for (const ingredient of list) {
-      const textPattern = /^([\w\s\-]+)/;
-      const errorPattern = /additives/i;
-
-      if (!textPattern.test(ingredient) || errorPattern.test(ingredient)) {
-        setParsingError(`parsing error: ${ingredient}`);
-        break;
-      } else {
-        const polished = ingredient.split(textPattern)[1].toLowerCase().trim();
-        if (polished.length) {
-          parsedIngredients.push(polished);
-        }
-      }
-    }
-    setIngredients(parsedIngredients);
-  };
-
-  const onSubmitForm = async (e) => {
-    e.preventDefault();
-    // console.log(data);
-
+  async function onSubmit() {
     try {
       const body = {
-        name: productName,
-        product_type: productType,
-        pet_type: petType,
-        ingredients,
-        description: productDesc,
+        name: values.productName,
+        product_type: values.productType,
+        pet_type: values.petType,
+        ingredients: parsedIngredients,
+        description: values.productDesc,
       };
 
       const formData = new FormData();
-      formData.append('image', productImage);
-      formData.append('image_name', productImageName);
+      formData.append('image', values.productImage[0]);
       formData.append('product_info', JSON.stringify(body));
 
       await apiCalls.post('/products/create', formData);
@@ -126,7 +82,7 @@ const ProductCreate = () => {
     } catch (error) {
       console.error(error.message);
     }
-  };
+  }
 
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
@@ -140,40 +96,44 @@ const ProductCreate = () => {
           >
             Upload Image
             <input
+              name="productImage"
               type="file"
-              file={productImage}
-              value={productImageName}
-              onChange={(e) => imageSelectHandler(e)}
+              file={values.productImage}
+              onChange={handleImageChange}
               style={{ display: 'none' }}
             />
           </Button>
-          {previewImage && (
+          {values.productImage[1] && (
             <CardMedia
               className={classes.preview}
-              image={previewImage}
+              image={values.productImage[1]}
               alt="preview"
             ></CardMedia>
+          )}
+          {errors.productImage && (
+            <FormHelperText style={{ color: 'red' }}>
+              {errors.productImage}
+            </FormHelperText>
           )}
 
           <TextField
             name="productName"
             variant="standard"
             label="Product Name"
-            // value={productName}
-            // onChange={(e) => setProductName(e.target.value)}
             value={values.productName}
             onChange={handleChange}
-            helperText={errors.productName && errors.productName}
+            // helperText={errors.productName && errors.productName}
+            {...(errors.productName && {
+              error: true,
+              helperText: errors.productName,
+            })}
           />
-          <FormControl>
+          <FormControl {...(errors.petType && { error: true })}>
             <InputLabel id="pet_type-label">Pet Type</InputLabel>
             <Select
               name="petType"
               label="Pet Type"
               labelId="pet_type-label"
-              // defaultValue={petType}
-              // value={petType}
-              // onChange={(e) => setPetType(e.target.value)}
               defaultValue={values.petType}
               value={values.petType}
               onChange={handleChange}
@@ -188,15 +148,12 @@ const ProductCreate = () => {
               <FormHelperText>{errors.petType}</FormHelperText>
             )}
           </FormControl>
-          <FormControl>
+          <FormControl {...(errors.productType && { error: true })}>
             <InputLabel id="product_type-label">Product Type</InputLabel>
             <Select
               name="productType"
               label="Product Type"
               labelId="product_type-label"
-              // defaultValue={productType}
-              // value={productType}
-              // onChange={(e) => setProductType(e.target.value)}
               defaultValue={values.productType}
               value={values.productType}
               onChange={handleChange}
@@ -217,12 +174,12 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Description"
-            // value={productDesc}
-            // onChange={(e) => setProductDesc(e.target.value)}
-
             value={values.productDesc}
             onChange={handleChange}
-            helperText={errors.productDesc && errors.productDesc}
+            {...(errors.productDesc && {
+              error: true,
+              helperText: errors.productDesc,
+            })}
           />
 
           <TextField
@@ -231,12 +188,14 @@ const ProductCreate = () => {
             variant="outlined"
             rows={10}
             label="Product Ingredients"
-            // onChange={(e) => parseIngredients(e.target.value)}
             value={values.productIngredients}
             onChange={handleChange}
-            helperText={errors.productIngredients && errors.productIngredients}
+            {...(errors.productIngredients && {
+              error: true,
+              helperText: errors.productIngredients,
+            })}
           />
-          {parsingError && parsingError}
+
           <FormControl>
             <Button
               variant="contained"

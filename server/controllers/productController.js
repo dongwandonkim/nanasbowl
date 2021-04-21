@@ -78,7 +78,7 @@ const product_details = async (req, res) => {
 const product_create_post = async (req, res) => {
   try {
     const parseData = JSON.parse(req.body.product_info);
-    // console.log(parseData);
+    console.log(parseData);
     const {
       name,
       product_type,

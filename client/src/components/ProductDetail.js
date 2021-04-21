@@ -77,7 +77,6 @@ const ProductDetail = () => {
     const getProductDetail = async () => {
       try {
         const res = await apiCalls.get('/products/' + id);
-        console.log(res.data);
         setProductDetail(res.data);
       } catch (error) {
         console.error(error.message);
