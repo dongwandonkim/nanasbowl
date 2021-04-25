@@ -58,7 +58,6 @@ const product_details = async (req, res) => {
                     WHERE p.id = $1 GROUP BY p.id`,
       [id]
     );
-    console.log(productDetail.rows);
 
     if (productDetail.rows[0].product_img_url) {
       const getImageFromS3 = await getSignedUrl(
@@ -78,7 +77,7 @@ const product_details = async (req, res) => {
 const product_create_post = async (req, res) => {
   try {
     const parseData = JSON.parse(req.body.product_info);
-    console.log(parseData);
+
     const {
       name,
       product_type,

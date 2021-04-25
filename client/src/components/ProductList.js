@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from './ProductCard';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
@@ -21,13 +21,6 @@ const ProductList = () => {
   const classes = useStyles();
 
   const { productList, keyword, include } = useContext(ProductsContext);
-
-  const [list, setList] = useState([]);
-
-  // useEffect(() => {
-  //   setList(productList);
-  //   console.log(list);
-  // }, [productList, list]);
 
   const RenderText = () => {
     if (keyword && include) {
