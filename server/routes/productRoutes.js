@@ -3,13 +3,27 @@ const productController = require('../controllers/productController');
 const router = express.Router();
 const multer = require('multer');
 
-const upload = multer({ dest: 'upload/' });
+const upload = multer({
+  dest: 'upload/',
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
+      cb(new Error('File must be an image'));
+    }
+    cb(undefined, true);
+  },
+});
 
 //create PRODUCT
 router.post(
   '/create',
   upload.single('image'),
-  productController.product_create_post
+  productController.product_create_post,
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
 );
 
 //all products
@@ -25,7 +39,10 @@ router.delete('/:id', productController.product_delete);
 router.put(
   '/:id/edit',
   upload.single('image'),
-  productController.product_update
+  productController.product_update,
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
 );
 
 module.exports = router;

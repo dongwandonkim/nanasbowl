@@ -128,7 +128,9 @@ const product_create_post = async (req, res) => {
         [ids.rows[0].id, product_id.rows[0].id]
       );
     });
-    res.status(201).json('post success');
+    res
+      .status(201)
+      .send({ success: true, message: 'Product image has been uploaded' });
   } catch (error) {
     console.error(error.message);
   }
@@ -141,7 +143,7 @@ const product_delete = async (req, res) => {
       'DELETE FROM product WHERE product.id = $1',
       [id]
     );
-    res.status(204).json({
+    res.status(204).send({
       status: 'success',
       data: {
         product: response.rows[0],
